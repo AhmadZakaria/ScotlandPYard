@@ -18,15 +18,13 @@ deploy:
       cHJKU0NPdmtwZUE2WVYvKytNaWU4NzFzZVRRWWE5UlplVnhUQmFEQ1puZTQ5MUdQUTRjY1FoUTds
       RUhiczBGanlPNHVuTjNXZFlEVERMZDdqbmhuTmIzbmlOWlVrZ0J2SExORzM0Yk5RYTZOVmxXL0k9
   true:
-    python: 2.7
+    python: 3.6
     repo: AhmadZakaria/ScotlandPYard
     tags: true
 install: pip install -U tox-travis
 language: python
 python:
+- 3.6
 - 3.5
-- 3.4
-- 3.3
 - 2.7
-- 2.6
 script: tox
