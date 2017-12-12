@@ -7,8 +7,11 @@ from ScotlandPYard.resources.gameconfig import stylesheet
 
 
 class ScotlandPYardGame(QWidget):
-    NumButtons = ['btn' + str(i) for i in range(1, 32)]
-
+    NumButtons = [str(i) for i in range(1, 31)]
+    revealedstates = [2, 8, 14, 20 ,29]
+    for i in revealedstates:
+        NumButtons[i] = "({})".format(NumButtons[i])
+    
     def __init__(self):
 
         super(ScotlandPYardGame, self).__init__()
@@ -90,7 +93,7 @@ class ScotlandPYardGame(QWidget):
 
     def showMap(self):
         # Create widget
-        pixmap = QPixmap(os.path.join(self.resourcepath, 'map.jpg'))
+        pixmap = QPixmap(os.path.join(self.resourcepath, 'map3.jpg'))
         pixmap = pixmap.scaled(self.canvas.size())
         self.canvas.setPixmap(pixmap)
 
