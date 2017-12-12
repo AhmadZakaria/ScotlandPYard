@@ -1,6 +1,7 @@
+import os.path
+import pkg_resources
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from pip._vendor.requests.packages.chardet.chardetect import main
 
 from ScotlandPYard.resources.gameconfig import stylesheet
 
@@ -11,6 +12,9 @@ class ScotlandPYardGame(QWidget):
     def __init__(self):
 
         super(ScotlandPYardGame, self).__init__()
+        self.resourcepath = pkg_resources.resource_filename("ScotlandPYard.resources", "images")
+        iconpath = os.path.join(self.resourcepath, "icon.png")
+        self.setWindowIcon(QIcon(iconpath))
         self.canvas = QLabel()
 
         font = QFont()
@@ -86,7 +90,7 @@ class ScotlandPYardGame(QWidget):
 
     def showMap(self):
         # Create widget
-        pixmap = QPixmap('ScotlandPYard/resources/images/map.jpg')
+        pixmap = QPixmap(os.path.join(self.resourcepath, 'map.jpg'))
         pixmap = pixmap.scaled(self.canvas.size())
         self.canvas.setPixmap(pixmap)
 
@@ -108,6 +112,7 @@ def main():
     screen = ScotlandPYardGame()
     screen.show()
     sys.exit(app.exec_())
+
 
 if __name__ == "__main__":
     main()
