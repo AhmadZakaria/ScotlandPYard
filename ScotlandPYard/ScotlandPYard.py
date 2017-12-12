@@ -1,14 +1,16 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from resources.gameconfig import stylesheet
+from pip._vendor.requests.packages.chardet.chardetect import main
+
+from ScotlandPYard.resources.gameconfig import stylesheet
 
 
-class PrettyWidget(QWidget):
+class ScotlandPYardGame(QWidget):
     NumButtons = ['btn' + str(i) for i in range(1, 32)]
 
     def __init__(self):
 
-        super(PrettyWidget, self).__init__()
+        super(ScotlandPYardGame, self).__init__()
         self.canvas = QLabel()
 
         font = QFont()
@@ -98,12 +100,14 @@ class PrettyWidget(QWidget):
         self.showMap()
 
 
-if __name__ == '__main__':
+def main():
     import sys
-
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
     app.setStyle(QStyleFactory.create("gtk"))
-    screen = PrettyWidget()
+    screen = ScotlandPYardGame()
     screen.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()

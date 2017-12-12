@@ -34,7 +34,7 @@ setup(
     author="Ahmad Zakaria M.",
     author_email='ahmadz1991@gmail.com',
     url='https://github.com/AhmadZakaria/ScotlandPYard',
-    packages=find_packages(include=['ScotlandPYard']),
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
             'ScotlandPYard=ScotlandPYard.cli:main'
