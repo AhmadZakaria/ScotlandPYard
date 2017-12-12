@@ -11,7 +11,7 @@ def main(args=None):
     click.echo("Replace this message by putting your code into "
                "ScotlandPYard.cli.main")
     click.echo("See click documentation at http://click.pocoo.org/")
-    spy.main()
+    # spy.main()
 
 
 if __name__ == "__main__":
