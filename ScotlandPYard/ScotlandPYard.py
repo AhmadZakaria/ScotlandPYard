@@ -11,7 +11,7 @@ class ScotlandPYardGame(QWidget):
     revealedstates = [2, 8, 14, 20 ,29]
     for i in revealedstates:
         NumButtons[i] = "({})".format(NumButtons[i])
-    
+
     def __init__(self):
 
         super(ScotlandPYardGame, self).__init__()
@@ -41,9 +41,8 @@ class ScotlandPYardGame(QWidget):
         mainlayout.addWidget(self.leftBox, 1)
         mainlayout.addWidget(self.thiefMovesGroupBox)
 
-        self.showMap()
-
         self.show()
+        self.showMap()
 
     def createThiefMovesGroupBox(self):
         self.thiefMovesGroupBox = QGroupBox()
