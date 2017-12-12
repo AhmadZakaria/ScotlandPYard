@@ -1,5 +1,6 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from resources.gameconfig import stylesheet
 
 
 class PrettyWidget(QWidget):
@@ -51,19 +52,25 @@ class PrettyWidget(QWidget):
         self.playersDashHBox = QGroupBox()
 
         layout = QHBoxLayout()
-        for i in range(1, 6):
-            playerDash = self.getNewPlayerDash("Player " + str(i))
+        # add detectives
+        for i in range(1, 5):
+            playerDash = self.getNewPlayerDash("Detective " + str(i))
             layout.addWidget(playerDash)
-            self.playersDashHBox.setLayout(layout)
+
+        # add Mr. X
+        playerDash = self.getNewPlayerDash("Mr. X")
+        layout.addWidget(playerDash)
+        self.playersDashHBox.setLayout(layout)
 
     def getNewPlayerDash(self, playerName):
         items = {'Taxi': 10, 'Bus': 8, 'Underground': 5}
-        playerDash = QGroupBox()
+        playerDash = QGroupBox(playerName)
 
         layout = QVBoxLayout()
         for k, v in items.items():
             button = QPushButton("{} x{}".format(k, v))
             button.setObjectName(k)
+            button.setStyleSheet(stylesheet[k])
             layout.addWidget(button)
             playerDash.setLayout(layout)
         return playerDash
