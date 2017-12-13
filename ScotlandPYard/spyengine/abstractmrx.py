@@ -4,8 +4,8 @@ from .abstractplayer import AbstractPlayer
 
 
 class AbstractMrX(AbstractPlayer):
-    def __init__(self, num_players=4):
-        super().__init__()
+    def __init__(self, is_ai=False, num_players=4):
+        super().__init__(is_ai=is_ai)
 
         self.name = "Mr. X"
         self.tickets = {
@@ -15,3 +15,6 @@ class AbstractMrX(AbstractPlayer):
             "2x": 2,
             "BlackTicket": num_players
         }
+
+    def get_role(self):
+        return "Mr. X"

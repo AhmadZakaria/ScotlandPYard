@@ -4,11 +4,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from ScotlandPYard.resources.gameconfig import stylesheet
+from ScotlandPYard.spyengine.engine import Game
 
 
 class ScotlandPYardGame(QWidget):
     NumButtons = [str(i) for i in range(1, 31)]
-    revealedstates = [2, 8, 14, 20 ,29]
+    revealedstates = [2, 8, 14, 20, 29]
     for i in revealedstates:
         NumButtons[i] = "({})".format(NumButtons[i])
 
@@ -20,8 +21,12 @@ class ScotlandPYardGame(QWidget):
         self.setWindowIcon(QIcon(iconpath))
         self.canvas = QLabel()
 
+        self.engine = None
+        self.game_state = None
+
         font = QFont()
         font.setPointSize(16)
+        self.createDummyGame()
         self.initUI()
 
     def initUI(self):
@@ -33,6 +38,7 @@ class ScotlandPYardGame(QWidget):
         mainlayout = QHBoxLayout()
         self.setLayout(mainlayout)
 
+        self.refresh_game_state()
         self.createThiefMovesGroupBox()
         self.createPlayersDashHBox()
 
@@ -43,6 +49,13 @@ class ScotlandPYardGame(QWidget):
 
         self.show()
         self.showMap()
+
+    def refresh_game_state(self):
+        if self.engine is not None:
+            self.game_state = self.engine.get_game_state()
+
+    def createDummyGame(self):
+        self.engine = Game()
 
     def createThiefMovesGroupBox(self):
         self.thiefMovesGroupBox = QGroupBox()
@@ -61,21 +74,25 @@ class ScotlandPYardGame(QWidget):
 
         layout = QHBoxLayout()
         # add detectives
-        for i in range(1, 5):
-            playerDash = self.getNewPlayerDash("Detective " + str(i))
+        for d in self.game_state["detectives"]:
+            playerDash = self.getNewPlayerDash(d)
             layout.addWidget(playerDash)
 
         # add Mr. X
-        playerDash = self.getNewPlayerDash("Mr. X")
+        playerDash = self.getNewPlayerDash(self.game_state["Mr. X"])
         layout.addWidget(playerDash)
+
         self.playersDashHBox.setLayout(layout)
 
-    def getNewPlayerDash(self, playerName):
-        items = {'Taxi': 10, 'Bus': 8, 'Underground': 5}
-        playerDash = QGroupBox(playerName)
+    def getNewPlayerDash(self, player):
+        # items = {'Taxi': 10, 'Bus': 8, 'Underground': 5}
+        displayname = player["name"]
+        if player["is_ai"]:
+            displayname += " (AI)"
+        playerDash = QGroupBox(displayname)
 
         layout = QVBoxLayout()
-        for k, v in items.items():
+        for k, v in player["tickets"].items():
             button = QPushButton("{} x{}".format(k, v))
             button.setObjectName(k)
             button.setStyleSheet(stylesheet[k])

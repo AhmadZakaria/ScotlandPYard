@@ -4,8 +4,8 @@ from .abstractplayer import AbstractPlayer
 
 
 class AbstractDetective(AbstractPlayer):
-    def __init__(self, name=None):
-        super().__init__()
+    def __init__(self, is_ai=False, name=None):
+        super().__init__(is_ai=is_ai)
 
         if name is None:
             # generate random animal name
@@ -17,3 +17,6 @@ class AbstractDetective(AbstractPlayer):
             "Taxi": 10,
             "Underground": 4
         }
+
+    def get_role(self):
+        return "detective"
