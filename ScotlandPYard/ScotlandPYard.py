@@ -56,6 +56,7 @@ class ScotlandPYardGame(QWidget):
 
     def createDummyGame(self):
         self.engine = Game()
+        # self.engine.start()
 
     def createThiefMovesGroupBox(self):
         self.thiefMovesGroupBox = QGroupBox()
@@ -93,7 +94,7 @@ class ScotlandPYardGame(QWidget):
 
         layout = QVBoxLayout()
         for k, v in player["tickets"].items():
-            button = QPushButton("{} x{}".format(k, v))
+            button = QPushButton("{} ({})".format(k, v))
             button.setObjectName(k)
             button.setStyleSheet(stylesheet[k])
             layout.addWidget(button)
