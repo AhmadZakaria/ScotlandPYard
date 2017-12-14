@@ -16,6 +16,7 @@ class SPYMap(QGraphicsView):
         super(SPYMap, self).__init__()
         self.resourcepath = pkg_resources.resource_filename("ScotlandPYard.resources", "images")
 
+        self.timerId = 0
         scene = QGraphicsScene(self)
         scene.setItemIndexMethod(QGraphicsScene.NoIndex)
         self.setScene(scene)
@@ -35,7 +36,7 @@ class SPYMap(QGraphicsView):
     def init_graph(self):
         # dummy graph
         nodes = [Node(self, nodeid=i) for i in range(100)]
-        self.graph = nx.gnm_random_graph(len(nodes), 300)
+        self.graph = nx.gnm_random_graph(len(nodes), 150)
         nx.relabel_nodes(self.graph, dict(enumerate(nodes)), copy=False)  # if copy = True then it returns a copy.
 
         randnode = choice(self.graph.nodes())
@@ -79,6 +80,25 @@ class SPYMap(QGraphicsView):
             return
 
         self.scale(scaleFactor, scaleFactor)
+
+    def itemMoved(self):
+        if not self.timerId:
+            self.timerId = self.startTimer(1000 / 25)
+
+    def timerEvent(self, event):
+        nodes = [item for item in self.scene().items() if isinstance(item, Node)]
+
+        for node in nodes:
+            node.calculateForces()
+
+        itemsMoved = False
+        for node in nodes:
+            if node.advance():
+                itemsMoved = True
+
+        if not itemsMoved:
+            self.killTimer(self.timerId)
+            self.timerId = 0
     # def redraw(self):
     #     self.clear()
     #     self.pixmap = self.pixmap_orig.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.FastTransformation)

@@ -204,7 +204,7 @@ class Node(QGraphicsItem):
                 yvel += (dy * 150.0) / l
 
         # Now subtract all forces pulling items together.
-        weight = (len(self.edgeList) + 1) * 10.0
+        weight = (len(self.edgeList) + 1) * 1.5
         for edge in self.edgeList:
             if edge.sourceNode() is self:
                 pos = self.mapFromItem(edge.destNode(), 0, 0)
@@ -265,7 +265,7 @@ class Node(QGraphicsItem):
         # if change == QGraphicsItem.ItemPositionHasChanged:
         for edge in self.edgeList:
             edge.adjust()
-            # self.graph.itemMoved()
+        self.graph.itemMoved()
 
         return super(Node, self).itemChange(change, value)
 
