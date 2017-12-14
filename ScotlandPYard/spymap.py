@@ -22,11 +22,11 @@ class SPYMap(QGraphicsView):
 
         self.setCacheMode(QGraphicsView.CacheBackground)
         self.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
-        self.setRenderHint(QPainter.Antialiasing)
+        # self.setRenderHint(QPainter.Antialiasing)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.AnchorViewCenter)
 
-        self.pixmap_orig = QPixmap(os.path.join(self.resourcepath, 'map3.jpg'))
+        self.pixmap_orig = QPixmap(os.path.join(self.resourcepath, 'map3_.jpg'))
         self.pixmap = self.pixmap_orig.scaled(self.pixmap_orig.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.pixmap_item = self.scene().addPixmap(self.pixmap)
 
@@ -34,34 +34,38 @@ class SPYMap(QGraphicsView):
 
     def init_graph(self):
         # dummy graph
-        self.graph = nx.gnm_random_graph(100, 300)
+        nodes = [Node(self, nodeid=i) for i in range(100)]
+        self.graph = nx.gnm_random_graph(len(nodes), 300)
+        nx.relabel_nodes(self.graph, dict(enumerate(nodes)), copy=False)  # if copy = True then it returns a copy.
+
         randnode = choice(self.graph.nodes())
         self.sub_graph = nx.ego_graph(self.graph, randnode)
+
+        for e in self.graph.edges(data=True):
+            edgedata = e[2]
+            edgedata["type"] = choice(["Taxi", "Underground", "Bus"])
         # end dummy graph
 
         self.pos = nx.spring_layout(self.graph, scale=0.5, center=(0.5, 0.5), iterations=100)
 
         for n in self.graph.nodes():
-            node = Node(self, nodeid=n)
-            node.setPos(*self.pos[n])
-            self.scene().addItem(node)
-            self.graph.node[n]["item"] = node
+            # node = Node(self, nodeid=n)
+            n.setPos(*self.pos[n])
+            self.scene().addItem(n)
 
-        for e in self.graph.edges():
-            src, dst = e
-            self.scene().addItem(Edge(self.graph.node[src]["item"], self.graph.node[dst]["item"],
-                                      choice(["Taxi", "Underground", "Bus"])))
+        for e in self.graph.edges(data=True):
+            src, dst, edgedata = e
+            self.scene().addItem(Edge(src, dst, edgedata["type"]))
 
     def resizeEvent(self, event):
         self.scene().removeItem(self.pixmap_item)
-        self.pixmap = self.pixmap.scaled(event.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.pixmap = self.pixmap_orig.scaled(event.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.pixmap_item = self.scene().addPixmap(self.pixmap)
         self.scene().setSceneRect(QRectF(self.pixmap.rect()))
 
         for n in self.graph.nodes():
-            node = self.graph.node[n]["item"]
             x, y = self.pos[n]
-            node.setPos(x * self.pixmap.width(), y * self.pixmap.height())
+            n.setPos(x * self.pixmap.width(), y * self.pixmap.height())
 
         self.scene().update()
 
