@@ -1,10 +1,13 @@
 import os.path
+
+# from PyQt5.QtOpenGL import *
 import pkg_resources
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from ScotlandPYard.resources.gameconfig import stylesheet
 from ScotlandPYard.spyengine.engine import Game
+from ScotlandPYard.spymap import SPYMap
 
 
 class ScotlandPYardGame(QWidget):
@@ -20,6 +23,10 @@ class ScotlandPYardGame(QWidget):
         iconpath = os.path.join(self.resourcepath, "icon.png")
         self.setWindowIcon(QIcon(iconpath))
         self.canvas = QLabel()
+        self.grview = QGraphicsView()
+        # self.grview.setViewport(QGLWidget())
+
+        self.spymap = SPYMap()
 
         self.engine = None
         self.game_state = None
@@ -104,15 +111,12 @@ class ScotlandPYardGame(QWidget):
     def createLeftBox(self):
         self.leftBox = QGroupBox()
         layout = QVBoxLayout()
-        layout.addWidget(self.canvas, 1)
+        layout.addWidget(self.spymap, 1)
         layout.addWidget(self.playersDashHBox)
         self.leftBox.setLayout(layout)
 
     def showMap(self):
-        # Create widget
-        pixmap = QPixmap(os.path.join(self.resourcepath, 'map3.jpg'))
-        pixmap = pixmap.scaled(self.canvas.size())
-        self.canvas.setPixmap(pixmap)
+        self.spymap.update()
 
     def center(self):
         qr = self.frameGeometry()
