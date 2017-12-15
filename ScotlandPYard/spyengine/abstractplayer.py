@@ -7,7 +7,8 @@ class AbstractPlayer(ABC):
     def __init__(self, is_ai=False):
         self.name = None
         self.tickets = None
-        self.is_ai=is_ai
+        self.location = None
+        self.is_ai = is_ai
 
     @abstractmethod
     def play_next(self):
@@ -17,6 +18,9 @@ class AbstractPlayer(ABC):
     @abstractmethod
     def get_role(self):
         NotImplementedError("Class {} doesn't implement get_role()".format(self.__class__.__name__))
+
+    def set_location(self, location):
+        self.location = location
 
     def get_info(self):
         """get player info"""

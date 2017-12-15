@@ -5,12 +5,12 @@ import pkg_resources
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from ScotlandPYard.resources.gameconfig import stylesheet
+from ScotlandPYard.resources.stylesheet import stylesheet
 from ScotlandPYard.spyengine.engine import Game
 from ScotlandPYard.spymap import SPYMap
 
 
-class ScotlandPYardGame(QWidget):
+class ScotlandPYardGame(QMainWindow):
     NumButtons = [str(i) for i in range(1, 31)]
     revealedstates = [2, 8, 14, 20, 29]
     for i in revealedstates:
@@ -26,14 +26,14 @@ class ScotlandPYardGame(QWidget):
         self.grview = QGraphicsView()
         # self.grview.setViewport(QGLWidget())
 
-        self.spymap = SPYMap()
+        self.spymap = SPYMap(map_name='map3')
 
         self.engine = None
         self.game_state = None
 
         font = QFont()
         font.setPointSize(16)
-        self.createDummyGame()
+        self.initGameEngine()
         self.initUI()
 
     def initUI(self):
@@ -42,12 +42,20 @@ class ScotlandPYardGame(QWidget):
         self.center()
         self.setWindowTitle('S. pyard')
 
-        mainlayout = QHBoxLayout()
-        self.setLayout(mainlayout)
+        self.statusBar()
 
-        self.refresh_game_state()
+        centralWidget = QWidget()
+        mainlayout = QHBoxLayout()
+
+        # Set the Layout
+        centralWidget.setLayout(mainlayout)
+
+        # Set the Widget
+        self.setCentralWidget(centralWidget)
+
         self.createThiefMovesGroupBox()
         self.createPlayersDashHBox()
+        self.refresh_game_state()
 
         self.createLeftBox()
 
@@ -61,9 +69,12 @@ class ScotlandPYardGame(QWidget):
         if self.engine is not None:
             self.game_state = self.engine.get_game_state()
 
-    def createDummyGame(self):
-        self.engine = Game()
-        # self.engine.start()
+            for i, layout in enumerate(self.playersDashHBox.findChildren(QGroupBox)):
+                layout.setEnabled(self.game_state["turn"] == i)
+
+    def initGameEngine(self):
+        self.engine = Game(graph=self.spymap.graph)
+        self.game_state = self.engine.get_game_state()
 
     def createThiefMovesGroupBox(self):
         self.thiefMovesGroupBox = QGroupBox()
@@ -81,19 +92,15 @@ class ScotlandPYardGame(QWidget):
         self.playersDashHBox = QGroupBox()
 
         layout = QHBoxLayout()
-        # add detectives
-        for d in self.game_state["detectives"]:
+        # add players
+        for d in self.game_state["players_state"]:
             playerDash = self.getNewPlayerDash(d)
-            layout.addWidget(playerDash)
 
-        # add Mr. X
-        playerDash = self.getNewPlayerDash(self.game_state["Mr. X"])
-        layout.addWidget(playerDash)
+            layout.addWidget(playerDash)
 
         self.playersDashHBox.setLayout(layout)
 
     def getNewPlayerDash(self, player):
-        # items = {'Taxi': 10, 'Bus': 8, 'Underground': 5}
         displayname = player["name"]
         if player["is_ai"]:
             displayname += " (AI)"
@@ -104,6 +111,8 @@ class ScotlandPYardGame(QWidget):
             button = QPushButton("{} ({})".format(k, v))
             button.setObjectName(k)
             button.setStyleSheet(stylesheet[k])
+            button.clicked.connect(self.submitCommand)
+            button.setProperty("player", player)
             layout.addWidget(button)
             playerDash.setLayout(layout)
         return playerDash
@@ -126,6 +135,12 @@ class ScotlandPYardGame(QWidget):
 
     def resizeEvent(self, event):
         self.showMap()
+
+    def submitCommand(self):
+        sender = self.sender()
+        player = sender.property("player")
+        self.statusBar().showMessage(sender.objectName() + ": " + player["name"] + ' was pressed')
+        self.engine.get_valid_nodes(player_name=player["name"], ticket=sender.objectName())
 
 
 def main():
