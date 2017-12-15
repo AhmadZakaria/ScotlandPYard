@@ -53,13 +53,13 @@ class Edge(QGraphicsItem):
 
     Type = QGraphicsItem.UserType + 2
 
-    def __init__(self, sourceNode, destNode, type="Taxi"):
+    def __init__(self, sourceNode, destNode, ticket="Taxi"):
         super(Edge, self).__init__()
 
         self.arrowSize = 10.0
         self.sourcePoint = QPointF()
         self.destPoint = QPointF()
-        self.type = type
+        self.ticket = ticket
 
         self.setAcceptedMouseButtons(Qt.NoButton)
         self.source = sourceNode
@@ -130,7 +130,7 @@ class Edge(QGraphicsItem):
         if line.length() == 0.0:
             return
 
-        painter.setPen(QPen(self.brush[self.type], 1, Qt.SolidLine, Qt.RoundCap,
+        painter.setPen(QPen(self.brush[self.ticket], 1, Qt.SolidLine, Qt.RoundCap,
                             Qt.RoundJoin))
         painter.drawLine(line)
 
@@ -176,7 +176,7 @@ class Node(QGraphicsItem):
         return Node.Type
 
     def addEdge(self, edge):
-        self.available_means[edge.type] = True
+        self.available_means[edge.ticket] = True
         self.edgeList.append(edge)
         edge.adjust()
 
