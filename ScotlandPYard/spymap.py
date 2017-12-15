@@ -9,12 +9,14 @@ from PyQt5.QtWidgets import *
 from numpy.random import choice
 
 from .mapcomponents import Node, Edge
+from .spyengine.maputils import get_map_graph
 
 
 class SPYMap(QGraphicsView):
-    def __init__(self):
+    def __init__(self, map_name):
         super(SPYMap, self).__init__()
         self.resourcepath = pkg_resources.resource_filename("ScotlandPYard.resources", "images")
+        self.mapname = map_name + ".jpg"
 
         self.timerId = 0
         scene = QGraphicsScene(self)
@@ -27,25 +29,19 @@ class SPYMap(QGraphicsView):
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.AnchorViewCenter)
 
-        self.pixmap_orig = QPixmap(os.path.join(self.resourcepath, 'map3_.jpg'))
+        self.pixmap_orig = QPixmap(os.path.join(self.resourcepath, map_name))
         self.pixmap = self.pixmap_orig.scaled(self.pixmap_orig.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.pixmap_item = self.scene().addPixmap(self.pixmap)
 
-        self.init_graph()
+        self.init_graph(map_name)
 
-    def init_graph(self):
-        # dummy graph
-        nodes = [Node(self, nodeid=i) for i in range(100)]
-        self.graph = nx.gnm_random_graph(len(nodes), 150)
-        nx.relabel_nodes(self.graph, dict(enumerate(nodes)), copy=False)  # if copy = True then it returns a copy.
-
-        randnode = choice(self.graph.nodes())
-        self.sub_graph = nx.ego_graph(self.graph, randnode)
-
-        for e in self.graph.edges(data=True):
-            edgedata = e[2]
-            edgedata["type"] = choice(["Taxi", "Underground", "Bus"])
-        # end dummy graph
+    def init_graph(self, map_name):
+        # get saved map graph
+        self.graph = get_map_graph(map_name)
+        # map node numbers to visual Node instances
+        nodes = [[i, Node(self, nodeid=i)] for i in self.graph.nodes()]
+        # relabel the graph to make the Node instances themselves as the graph nodes.
+        nx.relabel_nodes(self.graph, dict(nodes), copy=False)
 
         self.pos = nx.spring_layout(self.graph, scale=0.5, center=(0.5, 0.5), iterations=100)
 
@@ -56,7 +52,7 @@ class SPYMap(QGraphicsView):
 
         for e in self.graph.edges(data=True):
             src, dst, edgedata = e
-            self.scene().addItem(Edge(src, dst, edgedata["type"]))
+            self.scene().addItem(Edge(src, dst, edgedata["ticket"]))
 
     def resizeEvent(self, event):
         self.scene().removeItem(self.pixmap_item)
