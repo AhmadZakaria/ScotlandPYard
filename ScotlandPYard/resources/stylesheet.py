@@ -24,7 +24,7 @@ base = ''' QPushButton {{
 stylesheet = {
     'Underground': base.format("red", "black", "darkred"),
     'Taxi': base.format("yellow", "black", "darkgoldenrod"),
-    'Bus': base.format("green", "black", "darkgreen"),
+    'Bus': base.format("blue", "black", "darkblue"),
     "2x": base.format("orange", "black", "darkorange"),
     "BlackTicket": base.format("black", "white", "gray")
 }
