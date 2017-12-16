@@ -28,6 +28,7 @@ class AbstractPlayer(ABC):
             "name": self.name,
             "is_ai": self.is_ai,
             "tickets": self.tickets,
+            "location": self.location,
             "role": self.get_role()
         }
         return stats

@@ -163,6 +163,8 @@ class Node(QGraphicsItem):
         self.edgeList = []
         self.newPos = QPointF()
         self.nodeid = str(nodeid)
+        self.highlight = False
+        self.has_player = False
 
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
@@ -221,6 +223,12 @@ class Node(QGraphicsItem):
         self.newPos.setX(min(max(self.newPos.x(), sceneRect.left() + 10), sceneRect.right() - 10))
         self.newPos.setY(min(max(self.newPos.y(), sceneRect.top() + 10), sceneRect.bottom() - 10))
 
+    def set_highlight(self, hl):
+        self.highlight = hl
+
+    def set_has_player(self, hasplayer):
+        self.has_player = hasplayer
+
     def advance(self):
         if self.newPos == self.pos():
             return False
@@ -248,6 +256,16 @@ class Node(QGraphicsItem):
         else:
             gradient.setColorAt(0, bus_clr)
             gradient.setColorAt(0.5, underground_clr)
+
+        if self.highlight:
+            painter.setBrush(Qt.green)
+            painter.setPen(QPen(Qt.green, 1))
+            painter.drawEllipse(-15, -15, 30, 30)
+
+        if self.has_player:
+            painter.setBrush(Qt.magenta)
+            painter.setPen(QPen(Qt.magenta, 1))
+            painter.drawEllipse(-15, -15, 30, 30)
 
         painter.setBrush(QBrush(gradient))
         painter.setPen(QPen(Qt.black, 0))

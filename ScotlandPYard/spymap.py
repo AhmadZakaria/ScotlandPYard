@@ -1,12 +1,9 @@
 import math
-import os
 
 import networkx as nx
 import pkg_resources
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from numpy.random import choice
 
 from .mapcomponents import Node, Edge
 from .spyengine.maputils import get_map_graph
@@ -17,6 +14,8 @@ class SPYMap(QGraphicsView):
         super(SPYMap, self).__init__()
         self.resourcepath = pkg_resources.resource_filename("ScotlandPYard.resources", "images")
         self.mapname = map_name + ".jpg"
+        self.highlighted_nodes = []
+        self.player_location = None
 
         self.timerId = 0
         scene = QGraphicsScene(self)
@@ -29,9 +28,9 @@ class SPYMap(QGraphicsView):
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.AnchorViewCenter)
 
-        self.pixmap_orig = QPixmap(os.path.join(self.resourcepath, map_name))
-        self.pixmap = self.pixmap_orig.scaled(self.pixmap_orig.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.pixmap_item = self.scene().addPixmap(self.pixmap)
+        # self.pixmap_orig = QPixmap(os.path.join(self.resourcepath, map_name))
+        # self.pixmap = self.pixmap_orig.scaled(self.pixmap_orig.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # self.pixmap_item = self.scene().addPixmap(self.pixmap)
 
         self.init_graph(map_name)
 
@@ -55,14 +54,15 @@ class SPYMap(QGraphicsView):
             self.scene().addItem(Edge(src, dst, edgedata["ticket"]))
 
     def resizeEvent(self, event):
-        self.scene().removeItem(self.pixmap_item)
-        self.pixmap = self.pixmap_orig.scaled(event.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.pixmap_item = self.scene().addPixmap(self.pixmap)
-        self.scene().setSceneRect(QRectF(self.pixmap.rect()))
+        # self.scene().removeItem(self.pixmap_item)
+        # self.pixmap = self.pixmap_orig.scaled(event.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # self.pixmap_item = self.scene().addPixmap(self.pixmap)
+        # self.scene().setSceneRect(QRectF(self.pixmap.rect()))
 
         for n in self.graph.nodes():
             x, y = self.pos[n]
-            n.setPos(x * self.pixmap.width(), y * self.pixmap.height())
+            n.setPos(x, y)
+            # n.setPos(x * self.pixmap.width(), y * self.pixmap.height())
 
         self.scene().update()
 
@@ -95,6 +95,25 @@ class SPYMap(QGraphicsView):
         if not itemsMoved:
             self.killTimer(self.timerId)
             self.timerId = 0
+
+    def highlight_nodes(self, nodes=[]):
+        for node in self.highlighted_nodes:
+            node.set_highlight(False)
+            node.update()
+
+        for node in nodes:
+            node.set_highlight(True)
+            node.update()
+
+        self.highlighted_nodes = nodes
+
+    def set_player_turn(self, node):
+
+        if self.player_location is not None:
+            self.player_location.set_has_player(False)
+        node.set_has_player(True)
+        self.player_location = node
+
     # def redraw(self):
     #     self.clear()
     #     self.pixmap = self.pixmap_orig.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.FastTransformation)

@@ -68,9 +68,12 @@ class ScotlandPYardGame(QMainWindow):
     def refresh_game_state(self):
         if self.engine is not None:
             self.game_state = self.engine.get_game_state()
+            turn = self.game_state["turn"]
+            loc = self.game_state["players_state"][turn]["location"]
+            self.spymap.set_player_turn(loc)
 
             for i, layout in enumerate(self.playersDashHBox.findChildren(QGroupBox)):
-                layout.setEnabled(self.game_state["turn"] == i)
+                layout.setEnabled(turn == i)
 
     def initGameEngine(self):
         self.engine = Game(graph=self.spymap.graph)
@@ -140,7 +143,8 @@ class ScotlandPYardGame(QMainWindow):
         sender = self.sender()
         player = sender.property("player")
         self.statusBar().showMessage(sender.objectName() + ": " + player["name"] + ' was pressed')
-        self.engine.get_valid_nodes(player_name=player["name"], ticket=sender.objectName())
+        valid_nodes = self.engine.get_valid_nodes(player_name=player["name"], ticket=sender.objectName())
+        self.spymap.highlight_nodes(valid_nodes)
 
 
 def main():
