@@ -238,11 +238,11 @@ class Node(QGraphicsItem):
 
     def boundingRect(self):
         adjust = 2.0
-        return QRectF(-10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust)
+        return QRectF(-15 - adjust / 2, -15 - adjust / 2, 30 + adjust, 30 + adjust)
 
     def shape(self):
         path = QPainterPath()
-        path.addEllipse(-10, -10, 20, 20)
+        path.addEllipse(self.boundingRect())
         return path
 
     def paint(self, painter, option, widget):
