@@ -3,6 +3,9 @@ Scotland PYard
 ==============
 
 
+.. image:: https://img.shields.io/badge/License-MIT-yellow.svg
+        :target: https://opensource.org/licenses/MIT
+
 .. image:: https://img.shields.io/pypi/v/ScotlandPYard.svg
         :target: https://pypi.python.org/pypi/ScotlandPYard
 
