@@ -39,7 +39,7 @@ pytz==2017.3
 PyYAML==3.12
 requests==2.18.4
 setuptools==38.2.5
-sip==4.19.6
+sip==4.19.7
 six==1.11.0
 snowballstemmer==1.2.1
 Sphinx==1.6.5
