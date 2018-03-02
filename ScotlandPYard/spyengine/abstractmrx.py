@@ -1,5 +1,3 @@
-import petname
-
 from .abstractplayer import AbstractPlayer
 
 

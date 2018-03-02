@@ -60,8 +60,8 @@ class SPYMap(QGraphicsView):
         # self.scene().setSceneRect(QRectF(self.pixmap.rect()))
 
         for n in self.graph.nodes():
-            x, y = self.pos[n]
-            n.setPos(x, y)
+            # x, y = self.pos[n]
+            n.setPos(*self.pos[n])
             # n.setPos(x * self.pixmap.width(), y * self.pixmap.height())
 
         self.scene().update()
@@ -90,6 +90,7 @@ class SPYMap(QGraphicsView):
         itemsMoved = False
         for node in nodes:
             if node.advance():
+                self.pos[node] = [node.pos().x(), node.pos().y()]
                 itemsMoved = True
 
         if not itemsMoved:
