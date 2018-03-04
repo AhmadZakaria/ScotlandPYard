@@ -288,17 +288,20 @@ class Node(QGraphicsItem):
         return super(Node, self).itemChange(change, value)
 
     def mouseDoubleClickEvent(self, event):
-        print("mouseDoubleClickEvent")
         self.graph.handleNodeClick(self)
         self.update()
         super(Node, self).mouseReleaseEvent(event)
 
     def mousePressEvent(self, event):
-        print("mousepress")
         self.update()
         super(Node, self).mousePressEvent(event)
 
     def mouseReleaseEvent(self, event):
-        print("mouserelease")
         self.update()
         super(Node, self).mouseReleaseEvent(event)
+
+    def __str__(self):
+        return "Node:({})".format(self.nodeid)
+
+    def __repr__(self):
+        return "Node:({})".format(self.nodeid)
