@@ -4,15 +4,18 @@ from .humandetective import HumanDetective
 from .humanmrx import HumanMrX
 
 
-class Game():
-    def __init__(self, graph, num_detectives=4):
-        self.graph = graph
-        self.players = []
+class IllegalMoveException(Exception):
+    pass
+
+
+class GameEngine():
+    def __init__(self, spymap, num_detectives=4):
+        self.spymap = spymap
+        self.graph = spymap.graph
+        self.players = [HumanDetective() for i in range(num_detectives)]
         self.turn = 0
-        for i in range(num_detectives):
-            detective = HumanDetective()
-            detective.set_location(choice(graph.nodes()))
-            self.players.append(detective)
+        for detective in self.players:
+            detective.set_location(choice(self.graph.nodes()))
 
         self.mrx = HumanMrX(num_players=num_detectives)
         self.players.append(self.mrx)
@@ -34,7 +37,7 @@ class Game():
 
         valid_nodes = []
         for u, v, tick in self.graph.edges(nbunch=player.location, data='ticket'):
-            if tick==ticket:
+            if tick == ticket and player.tickets[ticket] > 0:
                 valid_nodes.append(v)
 
         print("Player now at: {}".format(player.location.nodeid))
