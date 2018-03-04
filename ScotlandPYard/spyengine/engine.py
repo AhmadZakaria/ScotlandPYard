@@ -1,6 +1,7 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, QTimer
 from numpy.random import choice
 
+from .StupidAIDetective import StupidAIDetective
 from .humandetective import HumanDetective
 from .humanmrx import HumanMrX
 
@@ -16,7 +17,9 @@ class GameEngine(QObject):
         super(GameEngine, self).__init__()
         self.spymap = spymap
         self.graph = spymap.graph
-        self.players = [HumanDetective(self) for i in range(num_detectives)]
+        self.num_detectives = num_detectives
+        # self.players = [HumanDetective(self) for i in range(num_detectives)]
+        self.players = [HumanDetective(self), StupidAIDetective(self), StupidAIDetective(self), StupidAIDetective(self)]
         self.turn = 0
         taken_locations = set()
         for detective in self.players:
@@ -48,8 +51,8 @@ class GameEngine(QObject):
             if tick == ticket and player.tickets[ticket] > 0:
                 valid_nodes.append(v)
 
-        print("Player now at: {}".format(player.location.nodeid))
-        print("Available moves by {}: ".format(ticket))
+        # print("Player now at: {}".format(player.location.nodeid))
+        # print("Available moves by {}: ".format(ticket))
         print([n.nodeid for n in valid_nodes])
 
         return valid_nodes
@@ -64,3 +67,9 @@ class GameEngine(QObject):
         self.turn = (self.turn + 1) % len(self.players)
 
         self.game_state_changed.emit()
+
+        # prompt next player to play if its AI.
+        if self.players[self.turn].is_ai:
+            print("is AI")
+            # Wait for 1 second to simulate thinking and give people time to see
+            QTimer.singleShot(1000, lambda: self.players[self.turn].play_next())
