@@ -20,6 +20,7 @@ class ScotlandPYardGame(QMainWindow):
         self.setWindowIcon(QIcon(iconpath))
         self.canvas = QLabel()
         self.grview = QGraphicsView()
+        self.player_ticket_buttons = []
         # self.grview.setViewport(QGLWidget())
 
         self.NumButtons = [str(i) for i in range(1, 31)]
@@ -72,10 +73,21 @@ class ScotlandPYardGame(QMainWindow):
             print(self.game_state)
             turn = self.game_state["turn"]
             loc = self.game_state["players_state"][turn]["location"]
+            self.spymap.set_player_locations(
+                [self.game_state["players_state"][i]["location"] for i in range(self.engine.num_detectives)])
             self.spymap.set_player_turn(loc)
 
             for i, layout in enumerate(self.playersDashHBox.findChildren(QGroupBox)):
                 layout.setEnabled(turn == i)
+
+            players_by_name = dict([[p['name'], p] for p in self.game_state['players_state']])
+            for b in self.player_ticket_buttons:
+                p = players_by_name[b.property('player_name')]
+                t = b.property('ticket')
+                t_num = p["tickets"][t]
+                b.setText("{} ({})".format(t, t_num))
+                b.update()
+            self.playersDashHBox.update()
 
     def initGameEngine(self):
         self.engine = GameEngine(spymap=self.spymap)
@@ -119,7 +131,9 @@ class ScotlandPYardGame(QMainWindow):
             button.setObjectName(k)
             button.setStyleSheet(stylesheet[k])
             button.clicked.connect(self.submitCommand)
-            button.setProperty("player", player)
+            button.setProperty("player_name", player['name'])
+            button.setProperty("ticket", k)
+            self.player_ticket_buttons.append(button)
             layout.addWidget(button)
             playerDash.setLayout(layout)
         return playerDash
@@ -145,9 +159,9 @@ class ScotlandPYardGame(QMainWindow):
 
     def submitCommand(self):
         sender = self.sender()
-        player = sender.property("player")
-        self.statusBar().showMessage(sender.objectName() + ": " + player["name"] + ' was pressed')
-        valid_nodes = self.engine.get_valid_nodes(player_name=player["name"], ticket=sender.objectName())
+        player = sender.property("player_name")
+        self.statusBar().showMessage(sender.objectName() + ": " + player + ' was pressed')
+        valid_nodes = self.engine.get_valid_nodes(player_name=player, ticket=sender.objectName())
         self.spymap.highlight_nodes(valid_nodes, ticket=sender.objectName())
 
 
