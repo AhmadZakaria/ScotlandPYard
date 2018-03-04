@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QObject, pyqtSignal
 from numpy.random import choice
 
 from .humandetective import HumanDetective
@@ -8,16 +9,23 @@ class IllegalMoveException(Exception):
     pass
 
 
-class GameEngine():
+class GameEngine(QObject):
+    game_state_changed = pyqtSignal()
+
     def __init__(self, spymap, num_detectives=4):
+        super(GameEngine, self).__init__()
         self.spymap = spymap
         self.graph = spymap.graph
-        self.players = [HumanDetective() for i in range(num_detectives)]
+        self.players = [HumanDetective(self) for i in range(num_detectives)]
         self.turn = 0
+        taken_locations = set()
         for detective in self.players:
-            detective.set_location(choice(self.graph.nodes()))
+            chosen = choice(list(set(self.graph.nodes()).difference(taken_locations)))
+            taken_locations.add(chosen)
+            detective.set_location(chosen)
 
-        self.mrx = HumanMrX(num_players=num_detectives)
+        self.mrx = HumanMrX(self, num_players=num_detectives)
+        self.mrx.set_location(choice(list(set(self.graph.nodes()).difference(taken_locations))))
         self.players.append(self.mrx)
 
     def get_game_state(self):
@@ -45,3 +53,14 @@ class GameEngine():
         print([n.nodeid for n in valid_nodes])
 
         return valid_nodes
+
+    def sendNextMove(self, node, ticket):
+        player = self.players[self.turn]
+        if node not in self.get_valid_nodes(player.name, ticket):
+            raise IllegalMoveException("This move is not allowed.")
+
+        player.tickets[ticket] -= 1
+        player.set_location(node)
+        self.turn = (self.turn + 1) % len(self.players)
+
+        self.game_state_changed.emit()
