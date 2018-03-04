@@ -2,8 +2,8 @@ from .abstractplayer import AbstractPlayer
 
 
 class AbstractMrX(AbstractPlayer):
-    def __init__(self, is_ai=False, num_players=4):
-        super().__init__(is_ai=is_ai)
+    def __init__(self, engine, is_ai=False, num_players=4):
+        super().__init__(engine, is_ai=is_ai)
 
         self.name = "Mr. X"
         self.tickets = {

@@ -4,11 +4,12 @@ from abc import ABC, abstractmethod
 class AbstractPlayer(ABC):
     """This is the abstract player class that provides a basic interface for all players in the game."""
 
-    def __init__(self, is_ai=False):
+    def __init__(self, engine, is_ai=False):
         self.name = None
         self.tickets = None
         self.location = None
         self.is_ai = is_ai
+        self.engine = engine
 
     @abstractmethod
     def play_next(self):

@@ -4,8 +4,8 @@ from .abstractplayer import AbstractPlayer
 
 
 class AbstractDetective(AbstractPlayer):
-    def __init__(self, is_ai=False, name=None):
-        super().__init__(is_ai=is_ai)
+    def __init__(self, engine, is_ai=False, name=None):
+        super().__init__(engine, is_ai=is_ai)
 
         if name is None:
             # generate random animal name

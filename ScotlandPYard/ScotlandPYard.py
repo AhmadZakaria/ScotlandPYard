@@ -6,15 +6,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from ScotlandPYard.resources.stylesheet import stylesheet
-from ScotlandPYard.spyengine.engine import Game
+from ScotlandPYard.spyengine.engine import GameEngine
 from ScotlandPYard.spymap import SPYMap
 
 
 class ScotlandPYardGame(QMainWindow):
-    NumButtons = [str(i) for i in range(1, 31)]
-    revealedstates = [2, 8, 14, 20, 29]
-    for i in revealedstates:
-        NumButtons[i] = "({})".format(NumButtons[i])
 
     def __init__(self):
 
@@ -25,6 +21,11 @@ class ScotlandPYardGame(QMainWindow):
         self.canvas = QLabel()
         self.grview = QGraphicsView()
         # self.grview.setViewport(QGLWidget())
+
+        self.NumButtons = [str(i) for i in range(1, 31)]
+        self.revealedstates = [2, 8, 14, 20, 29]
+        for i in self.revealedstates:
+            self.NumButtons[i] = "({})".format(self.NumButtons[i])
 
         self.spymap = SPYMap(map_name='map3')
 
@@ -68,6 +69,7 @@ class ScotlandPYardGame(QMainWindow):
     def refresh_game_state(self):
         if self.engine is not None:
             self.game_state = self.engine.get_game_state()
+            print(self.game_state)
             turn = self.game_state["turn"]
             loc = self.game_state["players_state"][turn]["location"]
             self.spymap.set_player_turn(loc)
@@ -76,8 +78,10 @@ class ScotlandPYardGame(QMainWindow):
                 layout.setEnabled(turn == i)
 
     def initGameEngine(self):
-        self.engine = Game(graph=self.spymap.graph)
+        self.engine = GameEngine(spymap=self.spymap)
         self.game_state = self.engine.get_game_state()
+        self.spymap.setEngine(self.engine)
+        self.engine.game_state_changed.connect(self.refresh_game_state)
 
     def createThiefMovesGroupBox(self):
         self.thiefMovesGroupBox = QGroupBox()
@@ -144,7 +148,7 @@ class ScotlandPYardGame(QMainWindow):
         player = sender.property("player")
         self.statusBar().showMessage(sender.objectName() + ": " + player["name"] + ' was pressed')
         valid_nodes = self.engine.get_valid_nodes(player_name=player["name"], ticket=sender.objectName())
-        self.spymap.highlight_nodes(valid_nodes)
+        self.spymap.highlight_nodes(valid_nodes, ticket=sender.objectName())
 
 
 def main():
