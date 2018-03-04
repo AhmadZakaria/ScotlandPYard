@@ -165,6 +165,7 @@ class Node(QGraphicsItem):
         self.nodeid = str(nodeid)
         self.highlight = False
         self.has_player = False
+        self.has_turn_player = False
 
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
@@ -229,6 +230,9 @@ class Node(QGraphicsItem):
     def set_has_player(self, hasplayer):
         self.has_player = hasplayer
 
+    def set_has_turn_player(self, hasturnplayer):
+        self.has_turn_player = hasturnplayer
+
     def advance(self):
         if self.newPos == self.pos():
             return False
@@ -265,6 +269,11 @@ class Node(QGraphicsItem):
         if self.has_player:
             painter.setBrush(Qt.magenta)
             painter.setPen(QPen(Qt.magenta, 1))
+            painter.drawEllipse(-15, -15, 30, 30)
+
+        if self.has_turn_player:
+            painter.setBrush(Qt.cyan)
+            painter.setPen(QPen(Qt.cyan, 1))
             painter.drawEllipse(-15, -15, 30, 30)
 
         painter.setBrush(QBrush(gradient))

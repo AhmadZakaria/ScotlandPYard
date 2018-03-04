@@ -15,7 +15,8 @@ class SPYMap(QGraphicsView):
         self.resourcepath = pkg_resources.resource_filename("ScotlandPYard.resources", "images")
         self.mapname = map_name + ".jpg"
         self.highlighted_nodes = []
-        self.player_location = None
+        self.turn_player_location = None
+        self.players_locations = []
         self.engine = None
         self.last_ticket = None
 
@@ -105,7 +106,7 @@ class SPYMap(QGraphicsView):
             node.update()
 
     def highlight_nodes(self, nodes=[], ticket="Taxi"):
-        self. unhighlight_nodes()
+        self.unhighlight_nodes()
 
         for node in nodes:
             node.set_highlight(True)
@@ -116,12 +117,24 @@ class SPYMap(QGraphicsView):
 
     def set_player_turn(self, node):
         self.unhighlight_nodes()
-        if self.player_location is not None:
-            self.player_location.set_has_player(False)
-            self.player_location.update()
-        node.set_has_player(True)
+        if self.turn_player_location is not None:
+            self.turn_player_location.set_has_turn_player(False)
+            self.turn_player_location.update()
+        node.set_has_turn_player(True)
         node.update()
-        self.player_location = node
+        self.turn_player_location = node
+
+    def set_player_locations(self, locs):
+        self.unhighlight_nodes()
+        for node in self.players_locations:
+            node.set_has_player(False)
+            node.update()
+
+        for node in locs:
+            node.set_has_player(True)
+            node.update()
+
+        self.players_locations = locs
 
     def setEngine(self, engine):
         self.engine = engine
@@ -130,35 +143,3 @@ class SPYMap(QGraphicsView):
         print("handleNodeClick from", node.nodeid)
         if node in self.highlighted_nodes:
             self.engine.sendNextMove(node, self.last_ticket)
-
-    # def redraw(self):
-    #     self.clear()
-    #     self.pixmap = self.pixmap_orig.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.FastTransformation)
-    #     self.setSceneRect(self.pixmap.rect())
-    #     self.scene().setSceneRect(self.pixmap.rect())
-    #
-    #     for edge in self.graph.edges():
-    #         # print(edge)
-    #         self.draw_edge(edge, brush=Qt.blue)
-    #
-    #     for edge in self.sub_graph.edges():
-    #         # print(edge)
-    #         self.draw_edge(edge, brush=Qt.yellow, stroke=1)
-    #
-    #     ellipse_side = 20
-    #     for node in self.graph.nodes():
-    #         self.draw_node(ellipse_side, node)
-    #
-    # def draw_edge(self, edge, brush=Qt.black, stroke=3):
-    #     src, dst = edge
-    #     src_pos = self.pos[src]
-    #     dst_pos = self.pos[dst]
-    #     self.addLine(src_pos[0] * self.pixmap.width(), src_pos[1] * self.pixmap.height(),
-    #                  dst_pos[0] * self.pixmap.width(), dst_pos[1] * self.pixmap.height(), QPen(brush, stroke))
-    #
-    # def draw_node(self, ellipse_side, node):
-    #     node_pos = self.pos[node]
-    #     print(node_pos)
-    #     half_side = ellipse_side / 2.0
-    #     self.addEllipse(node_pos[0] * self.pixmap.width() - half_side, node_pos[1] * self.pixmap.height() - half_side,
-    #                     ellipse_side, ellipse_side, brush=Qt.red)
