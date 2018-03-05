@@ -13,7 +13,10 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
-    # TODO: put package requirements here
+    'networkx==2.1',
+    'numpy==1.14.1',
+    'petname==2.2',
+    'PyQt5==5.9.2'
 ]
 
 setup_requirements = [
