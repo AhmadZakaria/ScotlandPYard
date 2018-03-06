@@ -8,7 +8,8 @@ def get_map_graph(map_name):
 
     map = maps[map_name]
     G = nx.MultiGraph()
-    for connection in map["connections"]:
-        keys = G.add_edges_from(map["connections"][connection], ticket=connection)
+    for ticket in map["connections"]:
+        for path in map["connections"][ticket]:
+            G.add_edge(path[0], path[-1], ticket=ticket, path=path)
 
     return G

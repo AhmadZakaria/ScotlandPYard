@@ -31,7 +31,14 @@ A python implementation of the board game "Scotland Yard"
 Features
 --------
 
-* TODO
+* Simple interface
+* Colored edges according to ticket type
+* Stubs for future AI implementations
+
+To Do
+-----
+* Implement a good AI agent
+* Finish the Gameplay
 
 Credits
 ---------

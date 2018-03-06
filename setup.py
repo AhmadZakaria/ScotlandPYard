@@ -16,7 +16,8 @@ requirements = [
     'networkx==2.1',
     'numpy==1.14.1',
     'petname==2.2',
-    'PyQt5==5.9.2'
+    'PyQt5==5.9.2',
+    'scipy==1.0.0'
 ]
 
 setup_requirements = [
@@ -31,7 +32,7 @@ test_requirements = [
 
 setup(
     name='ScotlandPYard',
-    version='1.0.1',
+    version='1.1.0',
     description="A python implementation of the board game 'Scotland Yard'",
     long_description=readme + '\n\n' + history,
     author="Ahmad Zakaria M.",
