@@ -43,14 +43,15 @@ class SPYMap(QGraphicsView):
         self.graph = get_map_graph(map_name)
         # map node numbers to visual Node instances
         nodes = [[i, Node(self, nodeid=i)] for i in self.graph.nodes()]
+        node_dict = dict(nodes)
         # relabel the graph to make the Node instances themselves as the graph nodes.
-        nx.relabel_nodes(self.graph, dict(nodes), copy=False)
+        nx.relabel_nodes(self.graph, node_dict, copy=False)
 
         self.pos = nx.spring_layout(self.graph, scale=250, center=(0, 0), iterations=100)
 
         for e in self.graph.edges(data=True):
             src, dst, edgedata = e
-            self.scene().addItem(Edge(src, dst, edgedata["ticket"]))
+            self.scene().addItem(Edge(src, dst, edgedata['path'], node_dict, edgedata["ticket"]))
 
         for n in self.graph.nodes():
             # node = Node(self, nodeid=n)

@@ -42,9 +42,11 @@
 
 import math
 
+import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from scipy.interpolate import interp2d, splprep, splev
 
 
 class Edge(QGraphicsItem):
@@ -53,23 +55,37 @@ class Edge(QGraphicsItem):
 
     Type = QGraphicsItem.UserType + 2
 
-    def __init__(self, sourceNode, destNode, ticket="Taxi"):
+    def __init__(self, sourceNode, destNode, path, node_dict, ticket='Taxi'):
         super(Edge, self).__init__()
+
+        assert len(path) >= 2
 
         self.arrowSize = 10.0
         self.sourcePoint = QPointF()
         self.destPoint = QPointF()
         self.ticket = ticket
+        self.node_dict = node_dict
+        self.path = path
 
         self.setAcceptedMouseButtons(Qt.NoButton)
         self.source = sourceNode
         self.dest = destNode
-        self.source.addEdge(self)
-        self.dest.addEdge(self)
+
+        # add the edge to the nodes, with edge force inversely proportional to the distance between nodes
+        self.source.addEdge(self, len(path) - 1)
+        self.dest.addEdge(self, len(path) - 1)
+
         self.adjust()
         self.setZValue(2)
 
-        self.brush = {"Taxi": Qt.white, "Underground": Qt.red, "Bus": Qt.blue}
+        self.brush = {"Taxi": Qt.yellow, "Underground": Qt.red, "Bus": Qt.blue}
+        self.line_style = {"Taxi": Qt.SolidLine, "Underground": Qt.DashDotDotLine, "Bus": Qt.SolidLine}
+
+        self.control_points = [sourceNode.pos()]
+        for p in path[1:-1]:
+            if p in node_dict.keys():
+                self.control_points.append(node_dict[p].pos())
+        self.control_points.append(destNode.pos())
 
     def type(self):
         return Edge.Type
@@ -115,24 +131,49 @@ class Edge(QGraphicsItem):
         penWidth = 1.0
         extra = (penWidth + self.arrowSize) / 2.0
 
-        return QRectF(self.sourcePoint,
-                      QSizeF(self.destPoint.x() - self.sourcePoint.x(),
-                             self.destPoint.y() - self.sourcePoint.y())).normalized().adjusted(-extra, -extra, extra,
-                                                                                               extra)
+        return QRectF(self.sourcePoint, QSizeF(self.destPoint.x() - self.sourcePoint.x(),
+                                               self.destPoint.y() - self.sourcePoint.y())).normalized().adjusted(-extra,
+                                                                                                                 -extra,
+                                                                                                                 extra,
+                                                                                                                 extra)
 
     def paint(self, painter, option, widget):
         if not self.source or not self.dest:
             return
 
-        # Draw the line itself.
-        line = QLineF(self.sourcePoint, self.destPoint)
+        painter.setPen(QPen(self.brush[self.ticket], 1, self.line_style[self.ticket], Qt.RoundCap,
+                            Qt.RoundJoin))
+        count = len(self.control_points)
+        path = QPainterPath(self.sourcePoint)
 
-        if line.length() == 0.0:
+        if count == 2:
+            # draw direct line
+            path.lineTo(self.destPoint)
+
+        else:
+            # draw c-spline passing through the control points
+            self.control_points = [self.sourceNode().pos()]
+            for p in self.path[1:-1]:
+                if p in self.node_dict.keys():
+                    self.control_points.append(self.node_dict[p].pos())
+            self.control_points.append(self.destNode().pos())
+
+            ptx = [p.x() for p in self.control_points]
+            pty = [p.y() for p in self.control_points]
+
+            if sum(ptx) == 0 or sum(pty) == 0: return  # nodes are not yet placed
+
+            k = 3 if count > 4 else 2
+            tck, u = splprep([ptx, pty], k=k, s=0)
+            xs = np.arange(0, 1.01, 0.01)
+            ys = splev(xs, tck)
+            for x, y in zip(ys[0], ys[1]):
+                path.lineTo(x, y)
+
+        if path.length() == 0.0:
             return
 
-        painter.setPen(QPen(self.brush[self.ticket], 1, Qt.SolidLine, Qt.RoundCap,
-                            Qt.RoundJoin))
-        painter.drawLine(line)
+        painter.drawPath(path)
 
 
 class Node(QGraphicsItem):
@@ -143,13 +184,14 @@ class Node(QGraphicsItem):
 
         self.graph = graphWidget
         self.edgeList = []
+        self.edgeForces = []
         self.newPos = QPointF()
         self.nodeid = str(nodeid)
         self.highlight = False
         self.has_player = False
         self.has_turn_player = False
 
-        # self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setCacheMode(QGraphicsItem.DeviceCoordinateCache)
         self.setZValue(2)
@@ -160,9 +202,10 @@ class Node(QGraphicsItem):
     def type(self):
         return Node.Type
 
-    def addEdge(self, edge):
+    def addEdge(self, edge, distance=1):
         self.available_means[edge.ticket] = True
         self.edgeList.append(edge)
+        self.edgeForces.append(1.0 / distance)
         edge.adjust()
 
     def edges(self):
@@ -190,11 +233,11 @@ class Node(QGraphicsItem):
 
         # Now subtract all forces pulling items together.
         weight = (len(self.edgeList) + 1) * 1.5
-        for edge in self.edgeList:
+        for edge, force in zip(self.edgeList, self.edgeForces):
             if edge.sourceNode() is self:
-                pos = self.mapFromItem(edge.destNode(), 0, 0)
+                pos = self.mapFromItem(edge.destNode(), 0, 0) * force
             else:
-                pos = self.mapFromItem(edge.sourceNode(), 0, 0)
+                pos = self.mapFromItem(edge.sourceNode(), 0, 0) * force
             xvel += pos.x() / weight
             yvel += pos.y() / weight
 
@@ -232,8 +275,8 @@ class Node(QGraphicsItem):
         return path
 
     def paint(self, painter, option, widget):
-        bus_clr = Qt.blue if self.available_means["Bus"] else Qt.white
-        underground_clr = Qt.red if self.available_means["Underground"] else Qt.white
+        bus_clr = Qt.blue if self.available_means["Bus"] else Qt.yellow
+        underground_clr = Qt.red if self.available_means["Underground"] else Qt.yellow
         blackpen = QPen(Qt.black, 1)
 
         gradient = QLinearGradient()
@@ -251,11 +294,6 @@ class Node(QGraphicsItem):
         painter.drawEllipse(-10 + shadow_shift, -10 + shadow_shift, 20, 20)
 
         # draw the highlights if any
-        if self.highlight:
-            painter.setBrush(Qt.green)
-            painter.setPen(QPen(Qt.green, 0))
-            painter.drawEllipse(-15, -15, 30, 30)
-
         if self.has_player:
             painter.setBrush(Qt.magenta)
             painter.setPen(QPen(Qt.magenta, 0))
@@ -264,6 +302,11 @@ class Node(QGraphicsItem):
         if self.has_turn_player:
             painter.setBrush(Qt.cyan)
             painter.setPen(QPen(Qt.cyan, 0))
+            painter.drawEllipse(-15, -15, 30, 30)
+            
+        if self.highlight:
+            painter.setBrush(Qt.green)
+            painter.setPen(QPen(Qt.green, 0))
             painter.drawEllipse(-15, -15, 30, 30)
 
         # draw node itself
