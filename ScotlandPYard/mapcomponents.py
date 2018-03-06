@@ -134,24 +134,6 @@ class Edge(QGraphicsItem):
                             Qt.RoundJoin))
         painter.drawLine(line)
 
-        # # Draw the arrows if there's enough room.
-        # angle = math.acos(line.dx() / line.length())
-        # if line.dy() >= 0:
-        #     angle = Edge.TwoPi - angle
-
-        # sourceArrowP1 = self.sourcePoint + QPointF(math.sin(angle + Edge.Pi / 3) * self.arrowSize,
-        #                                            math.cos(angle + Edge.Pi / 3) * self.arrowSize)
-        # sourceArrowP2 = self.sourcePoint + QPointF(math.sin(angle + Edge.Pi - Edge.Pi / 3) * self.arrowSize,
-        #                                            math.cos(angle + Edge.Pi - Edge.Pi / 3) * self.arrowSize)
-        # destArrowP1 = self.destPoint + QPointF(math.sin(angle - Edge.Pi / 3) * self.arrowSize,
-        #                                        math.cos(angle - Edge.Pi / 3) * self.arrowSize)
-        # destArrowP2 = self.destPoint + QPointF(math.sin(angle - Edge.Pi + Edge.Pi / 3) * self.arrowSize,
-        #                                        math.cos(angle - Edge.Pi + Edge.Pi / 3) * self.arrowSize)
-
-        # painter.setBrush(Qt.black)
-        # painter.drawPolygon(QPolygonF([line.p1(), sourceArrowP1, sourceArrowP2]))
-        # painter.drawPolygon(QPolygonF([line.p2(), destArrowP1, destArrowP2]))
-
 
 class Node(QGraphicsItem):
     Type = QGraphicsItem.UserType + 1
@@ -167,7 +149,7 @@ class Node(QGraphicsItem):
         self.has_player = False
         self.has_turn_player = False
 
-        self.setFlag(QGraphicsItem.ItemIsMovable)
+        # self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setCacheMode(QGraphicsItem.DeviceCoordinateCache)
         self.setZValue(2)
@@ -252,6 +234,7 @@ class Node(QGraphicsItem):
     def paint(self, painter, option, widget):
         bus_clr = Qt.blue if self.available_means["Bus"] else Qt.white
         underground_clr = Qt.red if self.available_means["Underground"] else Qt.white
+        blackpen = QPen(Qt.black, 1)
 
         gradient = QLinearGradient()
         if option.state & QStyle.State_Sunken:
@@ -261,32 +244,47 @@ class Node(QGraphicsItem):
             gradient.setColorAt(0, bus_clr)
             gradient.setColorAt(0.5, underground_clr)
 
+        # draw shadow
+        shadow_shift = 1
+        painter.setBrush(QBrush(Qt.gray))
+        painter.setPen(QPen(Qt.gray, 0))
+        painter.drawEllipse(-10 + shadow_shift, -10 + shadow_shift, 20, 20)
+
+        # draw the highlights if any
         if self.highlight:
             painter.setBrush(Qt.green)
-            painter.setPen(QPen(Qt.green, 1))
+            painter.setPen(QPen(Qt.green, 0))
             painter.drawEllipse(-15, -15, 30, 30)
 
         if self.has_player:
             painter.setBrush(Qt.magenta)
-            painter.setPen(QPen(Qt.magenta, 1))
+            painter.setPen(QPen(Qt.magenta, 0))
             painter.drawEllipse(-15, -15, 30, 30)
 
         if self.has_turn_player:
             painter.setBrush(Qt.cyan)
-            painter.setPen(QPen(Qt.cyan, 1))
+            painter.setPen(QPen(Qt.cyan, 0))
             painter.drawEllipse(-15, -15, 30, 30)
 
+        # draw node itself
         painter.setBrush(QBrush(gradient))
-        painter.setPen(QPen(Qt.black, 0))
+        painter.setPen(blackpen)
         painter.drawEllipse(-10, -10, 20, 20)
-        painter.fillRect(-5, -5, 10, 10, Qt.white)
+        # painter.fillRect(-5, -5, 10, 10, Qt.white)
 
         font = painter.font()
         font.setBold(True)
+        painter.setFont(font)
+
+        fm = QFontMetrics(painter.font())
+        w = fm.width(self.nodeid) + 1
+        h = fm.height()
+
+        # draw text
+        painter.setPen(blackpen)
         font.setPointSize(7)
         painter.setFont(font)
-        painter.setPen(Qt.black)
-        painter.drawText(-5, 5, self.nodeid)
+        painter.drawText(int(-w / 2), int(-h / 2), int(w), int(h), Qt.AlignCenter, self.nodeid)
 
     def itemChange(self, change, value):
         # if change == QGraphicsItem.ItemPositionHasChanged:
