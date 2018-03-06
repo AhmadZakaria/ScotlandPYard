@@ -16,7 +16,8 @@ requirements = [
     'networkx==2.1',
     'numpy==1.14.1',
     'petname==2.2',
-    'PyQt5==5.9.2'
+    'PyQt5==5.9.2',
+    'scipy==1.0.0'
 ]
 
 setup_requirements = [
