@@ -70,7 +70,7 @@ class ScotlandPYardGame(QMainWindow):
     def refresh_game_state(self):
         if self.engine is not None:
             self.game_state = self.engine.get_game_state()
-            print(self.game_state)
+            # print(self.game_state)
             turn = self.game_state["turn"]
             loc = self.game_state["players_state"][turn]["location"]
             self.spymap.set_player_locations(

@@ -8,8 +8,8 @@ import ScotlandPYard.ScotlandPYard as spy
 @click.command()
 def main(args=None):
     """Console script for ScotlandPYard."""
-    click.echo("Replace this message by putting your code into "
-               "ScotlandPYard.cli.main")
+    # click.echo("Replace this message by putting your code into "
+    #            "ScotlandPYard.cli.main")
     spy.main()
 
 

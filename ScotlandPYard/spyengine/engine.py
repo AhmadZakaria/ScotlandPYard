@@ -53,7 +53,7 @@ class GameEngine(QObject):
 
         # print("Player now at: {}".format(player.location.nodeid))
         # print("Available moves by {}: ".format(ticket))
-        print([n.nodeid for n in valid_nodes])
+        # print([n.nodeid for n in valid_nodes])
 
         return valid_nodes
 
@@ -70,6 +70,6 @@ class GameEngine(QObject):
 
         # prompt next player to play if its AI.
         if self.players[self.turn].is_ai:
-            print("is AI")
+            # print("is AI")
             # Wait for 1 second to simulate thinking and give people time to see
             QTimer.singleShot(1000, lambda: self.players[self.turn].play_next())

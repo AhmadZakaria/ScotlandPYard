@@ -45,7 +45,7 @@ class SPYMap(QGraphicsView):
         # relabel the graph to make the Node instances themselves as the graph nodes.
         nx.relabel_nodes(self.graph, dict(nodes), copy=False)
 
-        self.pos = nx.spring_layout(self.graph, scale=0.5, center=(0.5, 0.5), iterations=100)
+        self.pos = nx.spring_layout(self.graph, scale=250, center=(0, 0), iterations=100)
 
         for n in self.graph.nodes():
             # node = Node(self, nodeid=n)
@@ -140,6 +140,6 @@ class SPYMap(QGraphicsView):
         self.engine = engine
 
     def handleNodeClick(self, node):
-        print("handleNodeClick from", node.nodeid)
+        # print("handleNodeClick from", node.nodeid)
         if node in self.highlighted_nodes:
             self.engine.sendNextMove(node, self.last_ticket)
