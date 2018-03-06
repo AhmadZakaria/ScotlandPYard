@@ -4,6 +4,7 @@ import networkx as nx
 import pkg_resources
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 
 from .mapcomponents import Node, Edge
 from .spyengine.maputils import get_map_graph
@@ -27,7 +28,7 @@ class SPYMap(QGraphicsView):
 
         self.setCacheMode(QGraphicsView.CacheBackground)
         self.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
-        # self.setRenderHint(QPainter.Antialiasing)
+        self.setRenderHint(QPainter.Antialiasing)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.AnchorViewCenter)
 
@@ -47,14 +48,14 @@ class SPYMap(QGraphicsView):
 
         self.pos = nx.spring_layout(self.graph, scale=250, center=(0, 0), iterations=100)
 
+        for e in self.graph.edges(data=True):
+            src, dst, edgedata = e
+            self.scene().addItem(Edge(src, dst, edgedata["ticket"]))
+
         for n in self.graph.nodes():
             # node = Node(self, nodeid=n)
             n.setPos(*self.pos[n])
             self.scene().addItem(n)
-
-        for e in self.graph.edges(data=True):
-            src, dst, edgedata = e
-            self.scene().addItem(Edge(src, dst, edgedata["ticket"]))
 
     def resizeEvent(self, event):
         # self.scene().removeItem(self.pixmap_item)
