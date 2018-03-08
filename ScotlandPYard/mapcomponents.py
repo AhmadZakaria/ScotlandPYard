@@ -46,7 +46,9 @@ import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from scipy.interpolate import interp2d, splprep, splev
+from scipy.interpolate import splprep, splev
+
+from .profile_utils import profile
 
 
 class Edge(QGraphicsItem):
@@ -164,11 +166,14 @@ class Edge(QGraphicsItem):
             if sum(ptx) == 0 or sum(pty) == 0: return  # nodes are not yet placed
 
             k = 3 if count > 4 else 2
-            tck, u = splprep([ptx, pty], k=k, s=0)
-            xs = np.arange(0, 1.01, 0.01)
-            ys = splev(xs, tck)
-            for x, y in zip(ys[0], ys[1]):
-                path.lineTo(x, y)
+            try:
+                tck, u = splprep([ptx, pty], k=k, s=0)
+                xs = np.arange(0, 1.01, 0.01)
+                ys = splev(xs, tck)
+                for x, y in zip(ys[0], ys[1]):
+                    path.lineTo(x, y)
+            except:
+                pass
 
         if path.length() == 0.0:
             return
@@ -191,7 +196,7 @@ class Node(QGraphicsItem):
         self.has_player = False
         self.has_turn_player = False
 
-        self.setFlag(QGraphicsItem.ItemIsMovable)
+        # self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setCacheMode(QGraphicsItem.DeviceCoordinateCache)
         self.setZValue(2)
@@ -211,25 +216,30 @@ class Node(QGraphicsItem):
     def edges(self):
         return self.edgeList
 
+    @profile
     def calculateForces(self):
         if not self.scene() or self.scene().mouseGrabberItem() is self:
             self.newPos = self.pos()
             return
 
         # Sum up all forces pushing this item away.
-        xvel = 0.0
-        yvel = 0.0
-        for item in self.scene().items():
-            if not isinstance(item, Node):
-                continue
+        # xvel = 0.0
+        # yvel = 0.0
 
-            line = QLineF(self.mapFromItem(item, 0, 0), QPointF(0, 0))
-            dx = line.dx()
-            dy = line.dy()
-            l = 2.0 * (dx * dx + dy * dy)
-            if l > 0:
-                xvel += (dx * 150.0) / l
-                yvel += (dy * 150.0) / l
+        items = [i for i in self.scene().items() if isinstance(i, Node)]
+        lines = [QLineF(self.mapFromItem(item, 0, 0), QPointF(0, 0)) for item in items]
+        dx = np.array([line.dx() for line in lines])
+        dy = np.array([line.dy() for line in lines])
+        l = 2.0 * (dx * dx + dy * dy)
+        dx = dx[l > 0]
+        dy = dy[l > 0]
+        l = l[l > 0]
+
+        xvels = (dx * 30) / l
+        yvels = (dy * 30) / l
+
+        xvel = np.sum(xvels)
+        yvel = np.sum(yvels)
 
         # Now subtract all forces pulling items together.
         weight = (len(self.edgeList) + 1) * 1.5
@@ -241,7 +251,7 @@ class Node(QGraphicsItem):
             xvel += pos.x() / weight
             yvel += pos.y() / weight
 
-        if qAbs(xvel) < 0.1 and qAbs(yvel) < 0.1:
+        if qAbs(xvel) < 1 and qAbs(yvel) < 1:
             xvel = yvel = 0.0
 
         sceneRect = self.scene().sceneRect()
@@ -275,8 +285,9 @@ class Node(QGraphicsItem):
         return path
 
     def paint(self, painter, option, widget):
-        bus_clr = Qt.blue if self.available_means["Bus"] else Qt.yellow
-        underground_clr = Qt.red if self.available_means["Underground"] else Qt.yellow
+        bg_clr = Qt.yellow if self.available_means["Taxi"] else Qt.white
+        bus_clr = Qt.blue if self.available_means["Bus"] else bg_clr
+        underground_clr = Qt.red if self.available_means["Underground"] else bg_clr
         blackpen = QPen(Qt.black, 1)
 
         gradient = QLinearGradient()
@@ -303,7 +314,7 @@ class Node(QGraphicsItem):
             painter.setBrush(Qt.cyan)
             painter.setPen(QPen(Qt.cyan, 0))
             painter.drawEllipse(-15, -15, 30, 30)
-            
+
         if self.highlight:
             painter.setBrush(Qt.green)
             painter.setPen(QPen(Qt.green, 0))
