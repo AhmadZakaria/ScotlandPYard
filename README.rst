@@ -12,7 +12,7 @@ Scotland PYard
 .. image:: https://img.shields.io/travis/AhmadZakaria/ScotlandPYard.svg
         :target: https://travis-ci.org/AhmadZakaria/ScotlandPYard
 
-.. image:: https://readthedocs.org/projects/ScotlandPYard/badge/?version=latest
+.. image:: https://readthedocs.org/projects/scotlandpyard/badge/?version=latest
         :target: https://ScotlandPYard.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
