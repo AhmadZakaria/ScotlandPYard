@@ -3,9 +3,10 @@ import math
 import networkx as nx
 import pkg_resources
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
+from .profile_utils import profile, print_prof_data
 from .mapcomponents import Node, Edge
 from .spyengine.maputils import get_map_graph
 
@@ -27,17 +28,14 @@ class SPYMap(QGraphicsView):
         self.setScene(scene)
 
         self.setCacheMode(QGraphicsView.CacheBackground)
-        self.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
+        self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
         self.setRenderHint(QPainter.Antialiasing)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.AnchorViewCenter)
 
-        # self.pixmap_orig = QPixmap(os.path.join(self.resourcepath, map_name))
-        # self.pixmap = self.pixmap_orig.scaled(self.pixmap_orig.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        # self.pixmap_item = self.scene().addPixmap(self.pixmap)
-
         self.init_graph(map_name)
 
+    @profile
     def init_graph(self, map_name):
         # get saved map graph
         self.graph = get_map_graph(map_name)
@@ -47,29 +45,17 @@ class SPYMap(QGraphicsView):
         # relabel the graph to make the Node instances themselves as the graph nodes.
         nx.relabel_nodes(self.graph, node_dict, copy=False)
 
-        self.pos = nx.spring_layout(self.graph, scale=250, center=(0, 0), iterations=100)
+        # self.pos = nx.spring_layout(self.graph, scale=250, center=(0, 0), iterations=100)
+        print("Setting up graph..")
+        self.pos = nx.spring_layout(self.graph, scale=600, center=(0, 0), iterations=1000)
 
         for e in self.graph.edges(data=True):
             src, dst, edgedata = e
             self.scene().addItem(Edge(src, dst, edgedata['path'], node_dict, edgedata["ticket"]))
 
         for n in self.graph.nodes():
-            # node = Node(self, nodeid=n)
             n.setPos(*self.pos[n])
             self.scene().addItem(n)
-
-    def resizeEvent(self, event):
-        # self.scene().removeItem(self.pixmap_item)
-        # self.pixmap = self.pixmap_orig.scaled(event.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        # self.pixmap_item = self.scene().addPixmap(self.pixmap)
-        # self.scene().setSceneRect(QRectF(self.pixmap.rect()))
-
-        for n in self.graph.nodes():
-            # x, y = self.pos[n]
-            n.setPos(*self.pos[n])
-            # n.setPos(x * self.pixmap.width(), y * self.pixmap.height())
-
-        self.scene().update()
 
     def wheelEvent(self, event):
         self.scaleView(math.pow(2.0, -event.angleDelta().y() / 240.0))
@@ -87,17 +73,18 @@ class SPYMap(QGraphicsView):
             self.timerId = self.startTimer(1000 / 25)
 
     def timerEvent(self, event):
-        nodes = [item for item in self.scene().items() if isinstance(item, Node)]
+        # self.update_nodes()
+        print_prof_data()
 
-        for node in nodes:
+    @profile
+    def update_nodes(self):
+        for node in self.graph.nodes():
             node.calculateForces()
 
         itemsMoved = False
-        for node in nodes:
+        for node in self.graph.nodes():
             if node.advance():
-                self.pos[node] = [node.pos().x(), node.pos().y()]
                 itemsMoved = True
-
         if not itemsMoved:
             self.killTimer(self.timerId)
             self.timerId = 0
