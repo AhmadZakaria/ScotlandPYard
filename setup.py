@@ -32,7 +32,7 @@ test_requirements = [
 
 setup(
     name='ScotlandPYard',
-    version='1.1.0',
+    version='1.1.1',
     description="A python implementation of the board game 'Scotland Yard'",
     long_description=readme + '\n\n' + history,
     author="Ahmad Zakaria M.",
