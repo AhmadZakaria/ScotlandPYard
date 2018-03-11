@@ -81,7 +81,7 @@ class Edge(QGraphicsItem):
         self.setZValue(2)
 
         self.brush = {"Taxi": Qt.yellow, "Underground": Qt.red, "Bus": Qt.blue}
-        self.line_style = {"Taxi": Qt.SolidLine, "Underground": Qt.DashDotDotLine, "Bus": Qt.SolidLine}
+        self.line_style = {"Taxi": Qt.SolidLine, "Underground": Qt.DashDotDotLine, "Bus": Qt.DashLine}
 
         self.control_points = [sourceNode.pos()]
         for p in path[1:-1]:
