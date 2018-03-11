@@ -11,9 +11,12 @@ class StupidAIDetective(AIDetective):
                 moves.extend([(n, t) for n in self.engine.get_valid_nodes(self.name, t)])
 
         # print("Stupid AI: mesa thinks one of those is good")
-        idx = choice(len(moves))
-        random_move = moves[idx]
-        node, ticket = random_move
-        # print("Stupid AI: mesa choose to go to {} with dis {} yaaa".format(node.nodeid, ticket))
-
+        if len(moves) > 0:
+            idx = choice(len(moves))
+            random_move = moves[idx]
+            node, ticket = random_move
+            # print("Stupid AI: mesa choose to go to {} with dis {} yaaa".format(node.nodeid, ticket))
+        else:
+            node = None
+            ticket = None
         self.engine.sendNextMove(node, ticket)

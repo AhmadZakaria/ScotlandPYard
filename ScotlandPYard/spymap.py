@@ -6,8 +6,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from .profile_utils import profile, print_prof_data
 from .mapcomponents import Node, Edge
+from .profile_utils import profile
 from .spyengine.maputils import get_map_graph
 
 
@@ -57,6 +57,10 @@ class SPYMap(QGraphicsView):
             n.setPos(*self.pos[n])
             self.scene().addItem(n)
 
+    # def resizeEvent(self, event: QResizeEvent):
+    # print("Resize")
+    # self.fitInView(self.scene().itemsBoundingRect(), Qt.KeepAspectRatioByExpanding)
+
     def wheelEvent(self, event):
         self.scaleView(math.pow(2.0, -event.angleDelta().y() / 240.0))
 
@@ -74,7 +78,8 @@ class SPYMap(QGraphicsView):
 
     def timerEvent(self, event):
         # self.update_nodes()
-        print_prof_data()
+        # print_prof_data()
+        pass
 
     @profile
     def update_nodes(self):

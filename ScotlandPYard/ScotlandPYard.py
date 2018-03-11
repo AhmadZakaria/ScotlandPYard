@@ -1,5 +1,4 @@
 import os.path
-
 # from PyQt5.QtOpenGL import *
 import pkg_resources
 from PyQt5.QtGui import *
@@ -37,6 +36,8 @@ class ScotlandPYardGame(QMainWindow):
         font.setPointSize(16)
         self.initGameEngine()
         self.initUI()
+
+        self.engine.start_game()
 
     def initUI(self):
 
