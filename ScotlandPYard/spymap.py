@@ -21,6 +21,7 @@ class SPYMap(QGraphicsView):
         self.players_locations = []
         self.engine = None
         self.last_ticket = None
+        self.icons = []
 
         self.timerId = 0
         scene = QGraphicsScene(self)
@@ -109,6 +110,12 @@ class SPYMap(QGraphicsView):
         self.highlighted_nodes = nodes
         self.last_ticket = ticket
 
+    def update_state(self):
+        loc = self.engine.players[self.engine.turn].location
+        self.set_player_turn(loc)
+
+        self.set_player_locations([(p.name, p.location) for p in self.engine.players[:-1]])
+
     def set_player_turn(self, node):
         self.unhighlight_nodes()
         if self.turn_player_location is not None:
@@ -120,18 +127,24 @@ class SPYMap(QGraphicsView):
 
     def set_player_locations(self, locs):
         self.unhighlight_nodes()
-        for node in self.players_locations:
+        for name, node in self.players_locations:
             node.set_has_player(False)
             node.update()
 
-        for node in locs:
+        margin = 35
+        for name, node in locs:
             node.set_has_player(True)
             node.update()
+            self.icons[name].setPos(node.pos().x() - margin,
+                                    node.pos().y() - margin)
 
         self.players_locations = locs
 
     def setEngine(self, engine):
         self.engine = engine
+        self.icons = dict([[p.name, p.icon] for p in engine.players[:-1]])
+        for name, icon in self.icons.items():
+            self.scene().addItem(icon)
 
     def handleNodeClick(self, node):
         # print("handleNodeClick from", node.nodeid)

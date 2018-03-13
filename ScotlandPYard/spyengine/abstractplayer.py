@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from PyQt5.QtGui import QIcon
+
 
 class AbstractPlayer(ABC):
     """This is the abstract player class that provides a basic interface for all players in the game."""
@@ -8,6 +10,7 @@ class AbstractPlayer(ABC):
         self.name = None
         self.tickets = None
         self.location = None
+        self.icon = QIcon()
         self.is_ai = is_ai
         self.engine = engine
 
@@ -30,6 +33,7 @@ class AbstractPlayer(ABC):
             "is_ai": self.is_ai,
             "tickets": self.tickets,
             "location": self.location,
-            "role": self.get_role()
+            "role": self.get_role(),
+            "icon": self.icon
         }
         return stats

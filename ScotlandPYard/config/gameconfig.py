@@ -474,3 +474,13 @@ map3 = {"filename": "map3.jpg",
         }
 
 maps = {"map3": map3}
+icons = ["cat",
+         "deer",
+         "dog",
+         "fox",
+         "frog",
+         "grasshopper",
+         "owl",
+         "panda",
+         "snail",
+         "walrus"]

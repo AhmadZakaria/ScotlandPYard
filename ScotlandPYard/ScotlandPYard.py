@@ -70,13 +70,10 @@ class ScotlandPYardGame(QMainWindow):
 
     def refresh_game_state(self):
         if self.engine is not None:
+            self.spymap.update_state()
             self.game_state = self.engine.get_game_state()
             # print(self.game_state)
             turn = self.game_state["turn"]
-            loc = self.game_state["players_state"][turn]["location"]
-            self.spymap.set_player_locations(
-                [self.game_state["players_state"][i]["location"] for i in range(self.engine.num_detectives)])
-            self.spymap.set_player_turn(loc)
 
             for i, layout in enumerate(self.playersDashHBox.findChildren(QGroupBox)):
                 layout.setEnabled(turn == i)
