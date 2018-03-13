@@ -15,7 +15,6 @@ requirements = [
     'Click>=6.0',
     'networkx==2.1',
     'numpy==1.14.1',
-    'petname==2.2',
     'PyQt5==5.9.2',
     'scipy==1.0.0'
 ]
@@ -35,7 +34,7 @@ setup(
     version='1.1.1',
     description="A python implementation of the board game 'Scotland Yard'",
     long_description=readme + '\n\n' + history,
-    author="Ahmad Zakaria M.",
+    author="Ahmad Zakaria Mohammad",
     author_email='ahmadz1991@gmail.com',
     url='https://github.com/AhmadZakaria/ScotlandPYard',
     packages=['ScotlandPYard'],
