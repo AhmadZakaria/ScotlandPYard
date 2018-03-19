@@ -9,7 +9,7 @@ cffi==1.11.5
 chardet==3.0.4
 click==6.7
 coverage==4.5.1
-cryptography==2.1.4
+cryptography==2.2
 cycler==0.10.0
 decorator==4.2.1
 docutils==0.14
@@ -18,7 +18,7 @@ idna==2.6
 imagesize==1.0.0
 Jinja2==2.10
 MarkupSafe==1.0
-matplotlib==2.2.0
+matplotlib==2.2.2
 mccabe==0.6.1
 networkx==2.1
 numpy==1.14.2
@@ -32,13 +32,13 @@ Pygments==2.2.0
 pyparsing==2.2.0
 PyQt5==5.10.1
 pytest==3.4.2
-pytest-runner==4.0
+pytest-runner==4.2
 python-dateutil==2.7.0
 pytz==2018.3
 PyYAML==3.12
 requests==2.18.4
 scipy==1.0.0
-setuptools==38.5.2
+setuptools==39.0.1
 sip==4.19.8
 six==1.11.0
 snowballstemmer==1.2.1
