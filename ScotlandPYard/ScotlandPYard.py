@@ -56,14 +56,14 @@ class ScotlandPYardGame(QMainWindow):
         # Set the Widget
         self.setCentralWidget(centralWidget)
 
-        self.createThiefMovesGroupBox()
+        self.createMrXMovesGroupBox()
         self.createPlayersDashHBox()
         self.refresh_game_state()
 
         self.createLeftBox()
 
         mainlayout.addWidget(self.leftBox, 1)
-        mainlayout.addWidget(self.thiefMovesGroupBox)
+        mainlayout.addWidget(self.mrXMovesGroupBox)
 
         self.show()
         self.showMap()
@@ -72,6 +72,7 @@ class ScotlandPYardGame(QMainWindow):
         if self.engine is not None:
             self.spymap.update_state()
             self.game_state = self.engine.get_game_state()
+            self.updateMrXMoves()
             # print(self.game_state)
             turn = self.game_state["turn"]
 
@@ -93,17 +94,24 @@ class ScotlandPYardGame(QMainWindow):
         self.spymap.setEngine(self.engine)
         self.engine.game_state_changed.connect(self.refresh_game_state)
 
-    def createThiefMovesGroupBox(self):
-        self.thiefMovesGroupBox = QGroupBox()
+    def createMrXMovesGroupBox(self):
+        self.mrXMovesGroupBox = QGroupBox()
 
         layout = QVBoxLayout()
         for i in self.NumButtons:
             button = QPushButton(i)
             button.setObjectName(i)
             layout.addWidget(button)
-            self.thiefMovesGroupBox.setLayout(layout)
+        self.mrXMovesGroupBox.setLayout(layout)
 
     #       button.clicked.connect(self.submitCommand)
+    def updateMrXMoves(self):
+        moves = self.game_state['mrxmoves']
+        for i, btn in enumerate(self.mrXMovesGroupBox.findChildren(QPushButton)):
+            if i >= len(moves):
+                break
+            btn.setStyleSheet(stylesheet[moves[i]])
+            btn.update()
 
     def createPlayersDashHBox(self):
         self.playersDashHBox = QGroupBox()
