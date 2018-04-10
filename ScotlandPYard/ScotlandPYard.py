@@ -91,6 +91,7 @@ class ScotlandPYardGame(QMainWindow):
         self.game_state = self.engine.get_game_state()
         self.spymap.setEngine(self.engine)
         self.engine.game_state_changed.connect(self.refresh_game_state)
+        self.engine.game_over_signal.connect(self.game_over)
 
     def createMrXMovesGroupBox(self):
         self.mrXMovesGroupBox = QGroupBox()
@@ -171,6 +172,8 @@ class ScotlandPYardGame(QMainWindow):
         valid_nodes = self.engine.get_valid_nodes(player_name=player, ticket=sender.objectName())
         self.spymap.highlight_nodes(valid_nodes, ticket=sender.objectName())
 
+    def game_over(self,msg):
+        self.statusBar().showMessage(msg)
 
 def main():
     import sys

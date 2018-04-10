@@ -13,7 +13,7 @@ class IllegalMoveException(Exception):
 
 class GameEngine(QObject):
     game_state_changed = pyqtSignal()
-    game_over_signal = pyqtSignal()
+    game_over_signal = pyqtSignal(str)
 
     def __init__(self, spymap, num_detectives=4, maxMoves=30, revealedstates=[]):
         super(GameEngine, self).__init__()
@@ -54,15 +54,15 @@ class GameEngine(QObject):
         for p in self.players[:-1]:
             if p.location == self.mrx.location:
                 self.game_over = True
-                self.game_over_signal.emit()
-                print("{} has caught Mr.X".format(p.name))
-                print("Game over!")
+                msg = "{} has caught Mr.X\n\tGame over!".format(p.name)
 
         if len(self.mrxMoves) == self.maxMoves:
             self.game_over = True
-            self.game_over_signal.emit()
-            print("Mr.X has evaded justice!")
-            print("Game over!")
+            msg = "Mr.X has evaded justice!\n\tGame over!"
+
+        if self.game_over:
+            self.game_over_signal.emit(msg)
+            print(msg)
 
     def get_valid_nodes(self, player_name, ticket):
         player = None
@@ -99,7 +99,6 @@ class GameEngine(QObject):
                     self.mrxMoves.append([self.mrxLastKnownLocation, ticket])
                 else:
                     self.mrxMoves.append([None, ticket])
-
 
             player.set_location(node)
 
