@@ -98,7 +98,7 @@ class ScotlandPYardGame(QMainWindow):
 
         layout = QVBoxLayout()
         for i in range(1, self.numMrXMoves + 1):
-            text = "..." if i-1 not in self.revealedstates else "***"
+            text = "..." if i - 1 not in self.revealedstates else "***"
             button = QPushButton(text)
             button.setObjectName(str(i))
             layout.addWidget(button)
@@ -172,8 +172,9 @@ class ScotlandPYardGame(QMainWindow):
         valid_nodes = self.engine.get_valid_nodes(player_name=player, ticket=sender.objectName())
         self.spymap.highlight_nodes(valid_nodes, ticket=sender.objectName())
 
-    def game_over(self,msg):
+    def game_over(self, msg):
         self.statusBar().showMessage(msg)
+
 
 def main():
     import sys
