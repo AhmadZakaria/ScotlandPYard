@@ -21,11 +21,9 @@ class ScotlandPYardGame(QMainWindow):
         self.grview = QGraphicsView()
         self.player_ticket_buttons = []
         # self.grview.setViewport(QGLWidget())
+        self.numMrXMoves = 30
 
-        self.NumButtons = [str(i) for i in range(1, 31)]
         self.revealedstates = [2, 8, 14, 20, 29]
-        for i in self.revealedstates:
-            self.NumButtons[i] = "({})".format(self.NumButtons[i])
 
         self.spymap = SPYMap(map_name='map3')
 
@@ -89,7 +87,7 @@ class ScotlandPYardGame(QMainWindow):
             self.playersDashHBox.update()
 
     def initGameEngine(self):
-        self.engine = GameEngine(spymap=self.spymap)
+        self.engine = GameEngine(spymap=self.spymap, num_detectives=4, maxMoves=30, revealedstates=self.revealedstates)
         self.game_state = self.engine.get_game_state()
         self.spymap.setEngine(self.engine)
         self.engine.game_state_changed.connect(self.refresh_game_state)
@@ -98,9 +96,10 @@ class ScotlandPYardGame(QMainWindow):
         self.mrXMovesGroupBox = QGroupBox()
 
         layout = QVBoxLayout()
-        for i in self.NumButtons:
-            button = QPushButton(i)
-            button.setObjectName(i)
+        for i in range(1, self.numMrXMoves + 1):
+            text = "..." if i-1 not in self.revealedstates else "***"
+            button = QPushButton(text)
+            button.setObjectName(str(i))
             layout.addWidget(button)
         self.mrXMovesGroupBox.setLayout(layout)
 
@@ -110,7 +109,9 @@ class ScotlandPYardGame(QMainWindow):
         for i, btn in enumerate(self.mrXMovesGroupBox.findChildren(QPushButton)):
             if i >= len(moves):
                 break
-            btn.setStyleSheet(stylesheet[moves[i]])
+            btn.setStyleSheet(stylesheet[moves[i][1]])
+            if moves[i][0] is not None:
+                btn.setText(moves[i][0])
             btn.update()
 
     def createPlayersDashHBox(self):
