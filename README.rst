@@ -44,10 +44,8 @@ Credits
 ---------
 
 * This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-* Some of the icons used are made by `Freepik <http://www.freepik.com>`_ from `www.flaticon.com <https://www.flaticon.com/>`_, licensed by `CC 3.0 BY <http://creativecommons.org/licenses/by/3.0/>`_
-* Some of the icons used are made by `Eucalyp <https://www.flaticon.com/authors/eucalyp>`_ from `www.flaticon.com <https://www.flaticon.com/>`_, licensed by `CC 3.0 BY <http://creativecommons.org/licenses/by/3.0/>`_
+* Some of the icons used are made by `Freepik <http://www.freepik.com>`_ and `Eucalyp <https://www.flaticon.com/authors/eucalyp>`_ from `www.flaticon.com <https://www.flaticon.com/>`_, licensed by `CC 3.0 BY <http://creativecommons.org/licenses/by/3.0/>`_
 
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
-

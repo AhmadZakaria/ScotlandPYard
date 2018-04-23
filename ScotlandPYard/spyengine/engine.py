@@ -4,6 +4,7 @@ from numpy.random import choice
 from .StupidAIDetective import StupidAIDetective
 from .StupidAIMrX import StupidAIMrX
 from .abstractdetective import AbstractDetective
+from .abstractmrx import AbstractMrX
 
 
 class IllegalMoveException(Exception):
@@ -12,17 +13,21 @@ class IllegalMoveException(Exception):
 
 class GameEngine(QObject):
     game_state_changed = pyqtSignal()
-    game_over_signal = pyqtSignal()
+    game_over_signal = pyqtSignal(str)
 
-    def __init__(self, spymap, num_detectives=4):
+    def __init__(self, spymap, num_detectives=4, maxMoves=30, revealedstates=[]):
         super(GameEngine, self).__init__()
         self.spymap = spymap
         self.graph = spymap.graph
         self.num_detectives = num_detectives
+        self.maxMoves = maxMoves
+        self.revealedstates = revealedstates
         # self.players = [HumanDetective(self) for i in range(num_detectives)]
         self.players = [StupidAIDetective(self), StupidAIDetective(self), StupidAIDetective(self)]
         self.turn = 0
         self.game_over = False
+        self.mrxMoves = []
+        self.mrxLastKnownLocation = None
         taken_locations = set()
         for detective in self.players:
             chosen = choice(list(set(self.graph.nodes()).difference(taken_locations)))
@@ -37,7 +42,8 @@ class GameEngine(QObject):
     def get_game_state(self):
         state = {
             "players_state": [player.get_info() for player in self.players],
-            "turn": self.turn
+            "turn": self.turn,
+            "mrxmoves": self.mrxMoves
         }
         return state
 
@@ -48,9 +54,15 @@ class GameEngine(QObject):
         for p in self.players[:-1]:
             if p.location == self.mrx.location:
                 self.game_over = True
-                self.game_over_signal.emit()
-                print("{} has caught Mr.X".format(p.name))
-                print("Game over!")
+                msg = "{} has caught Mr.X\n\tGame over!".format(p.name)
+
+        if len(self.mrxMoves) == self.maxMoves:
+            self.game_over = True
+            msg = "Mr.X has evaded justice!\n\tGame over!"
+
+        if self.game_over:
+            self.game_over_signal.emit(msg)
+            print(msg)
 
     def get_valid_nodes(self, player_name, ticket):
         player = None
@@ -80,6 +92,14 @@ class GameEngine(QObject):
             player.tickets[ticket] -= 1
             if isinstance(player, AbstractDetective):
                 self.mrx.tickets[ticket] += 1
+
+            if isinstance(player, AbstractMrX):
+                if len(self.mrxMoves) in self.revealedstates:
+                    self.mrxLastKnownLocation = node.nodeid
+                    self.mrxMoves.append([self.mrxLastKnownLocation, ticket])
+                else:
+                    self.mrxMoves.append([None, ticket])
+
             player.set_location(node)
 
         self.turn = (self.turn + 1) % len(self.players)

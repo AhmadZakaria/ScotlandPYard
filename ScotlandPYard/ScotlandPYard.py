@@ -21,11 +21,9 @@ class ScotlandPYardGame(QMainWindow):
         self.grview = QGraphicsView()
         self.player_ticket_buttons = []
         # self.grview.setViewport(QGLWidget())
+        self.numMrXMoves = 30
 
-        self.NumButtons = [str(i) for i in range(1, 31)]
         self.revealedstates = [2, 8, 14, 20, 29]
-        for i in self.revealedstates:
-            self.NumButtons[i] = "({})".format(self.NumButtons[i])
 
         self.spymap = SPYMap(map_name='map3')
 
@@ -56,14 +54,14 @@ class ScotlandPYardGame(QMainWindow):
         # Set the Widget
         self.setCentralWidget(centralWidget)
 
-        self.createThiefMovesGroupBox()
+        self.createMrXMovesGroupBox()
         self.createPlayersDashHBox()
         self.refresh_game_state()
 
         self.createLeftBox()
 
         mainlayout.addWidget(self.leftBox, 1)
-        mainlayout.addWidget(self.thiefMovesGroupBox)
+        mainlayout.addWidget(self.mrXMovesGroupBox)
 
         self.show()
         self.showMap()
@@ -72,6 +70,7 @@ class ScotlandPYardGame(QMainWindow):
         if self.engine is not None:
             self.spymap.update_state()
             self.game_state = self.engine.get_game_state()
+            self.updateMrXMoves()
             # print(self.game_state)
             turn = self.game_state["turn"]
 
@@ -88,22 +87,33 @@ class ScotlandPYardGame(QMainWindow):
             self.playersDashHBox.update()
 
     def initGameEngine(self):
-        self.engine = GameEngine(spymap=self.spymap)
+        self.engine = GameEngine(spymap=self.spymap, num_detectives=4, maxMoves=30, revealedstates=self.revealedstates)
         self.game_state = self.engine.get_game_state()
         self.spymap.setEngine(self.engine)
         self.engine.game_state_changed.connect(self.refresh_game_state)
+        self.engine.game_over_signal.connect(self.game_over)
 
-    def createThiefMovesGroupBox(self):
-        self.thiefMovesGroupBox = QGroupBox()
+    def createMrXMovesGroupBox(self):
+        self.mrXMovesGroupBox = QGroupBox()
 
         layout = QVBoxLayout()
-        for i in self.NumButtons:
-            button = QPushButton(i)
-            button.setObjectName(i)
+        for i in range(1, self.numMrXMoves + 1):
+            text = "..." if i - 1 not in self.revealedstates else "***"
+            button = QPushButton(text)
+            button.setObjectName(str(i))
             layout.addWidget(button)
-            self.thiefMovesGroupBox.setLayout(layout)
+        self.mrXMovesGroupBox.setLayout(layout)
 
     #       button.clicked.connect(self.submitCommand)
+    def updateMrXMoves(self):
+        moves = self.game_state['mrxmoves']
+        for i, btn in enumerate(self.mrXMovesGroupBox.findChildren(QPushButton)):
+            if i >= len(moves):
+                break
+            btn.setStyleSheet(stylesheet[moves[i][1]])
+            if moves[i][0] is not None:
+                btn.setText(moves[i][0])
+            btn.update()
 
     def createPlayersDashHBox(self):
         self.playersDashHBox = QGroupBox()
@@ -161,6 +171,9 @@ class ScotlandPYardGame(QMainWindow):
         self.statusBar().showMessage(sender.objectName() + ": " + player + ' was pressed')
         valid_nodes = self.engine.get_valid_nodes(player_name=player, ticket=sender.objectName())
         self.spymap.highlight_nodes(valid_nodes, ticket=sender.objectName())
+
+    def game_over(self, msg):
+        self.statusBar().showMessage(msg)
 
 
 def main():
