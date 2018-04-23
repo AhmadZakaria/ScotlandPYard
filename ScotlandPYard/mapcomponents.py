@@ -48,8 +48,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from scipy.interpolate import splprep, splev
 
-from .profile_utils import profile
-
 
 class Edge(QGraphicsItem):
     Pi = math.pi
@@ -217,8 +215,8 @@ class Node(QGraphicsItem):
     def edges(self):
         return self.edgeList
 
-    @profile
-    def calculateForces(self):
+    # @profile
+    def calculateForces(self, pos_mat):
         if not self.scene() or self.scene().mouseGrabberItem() is self:
             self.newPos = self.pos()
             return
@@ -226,12 +224,10 @@ class Node(QGraphicsItem):
         # Sum up all forces pushing this item away.
         # xvel = 0.0
         # yvel = 0.0
-        if self.items is None:
-            self.items = [i for i in self.scene().items() if isinstance(i, Node)]
 
         xx, yy = self.pos().x(), self.pos().y()
-        dx = np.array([- item.pos().x() for item in self.items]) + xx
-        dy = np.array([- item.pos().y() for item in self.items]) + yy
+        dx = pos_mat[:, 0] + xx
+        dy = pos_mat[:, 1] + yy
         l = 2.0 * (np.square(dx) + np.square(dy))
         dx = dx[l > 0]
         dy = dy[l > 0]

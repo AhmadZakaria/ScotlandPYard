@@ -1,13 +1,14 @@
 import math
 
 import networkx as nx
+import numpy as np
 import pkg_resources
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from .mapcomponents import Node, Edge
-from .profile_utils import profile
+from .profile_utils import print_prof_data
 from .spyengine.maputils import get_map_graph
 
 
@@ -36,7 +37,6 @@ class SPYMap(QGraphicsView):
 
         self.init_graph(map_name)
 
-    @profile
     def init_graph(self, map_name):
         # get saved map graph
         self.graph = get_map_graph(map_name)
@@ -48,7 +48,7 @@ class SPYMap(QGraphicsView):
 
         # self.pos = nx.spring_layout(self.graph, scale=250, center=(0, 0), iterations=100)
         print("Setting up graph..")
-        self.pos = nx.spring_layout(self.graph, scale=600, center=(0, 0), iterations=1000)
+        self.pos = nx.spring_layout(self.graph, scale=600, center=(0, 0), iterations=50)
 
         for e in self.graph.edges(data=True):
             src, dst, edgedata = e
@@ -78,14 +78,15 @@ class SPYMap(QGraphicsView):
             self.timerId = self.startTimer(1000 / 25)
 
     def timerEvent(self, event):
-        # self.update_nodes()
+        self.update_nodes()
         # print_prof_data()
-        pass
 
-    @profile
+    # @profile
     def update_nodes(self):
+        pos_mat = np.array([[-item.pos().x(), -item.pos().y()] for item in self.graph.nodes()])
+
         for node in self.graph.nodes():
-            node.calculateForces()
+            node.calculateForces(pos_mat)
 
         itemsMoved = False
         for node in self.graph.nodes():
