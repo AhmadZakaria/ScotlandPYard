@@ -195,6 +195,7 @@ class Node(QGraphicsItem):
         self.highlight = False
         self.has_player = False
         self.has_turn_player = False
+        self.items = None
 
         # self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
@@ -225,12 +226,13 @@ class Node(QGraphicsItem):
         # Sum up all forces pushing this item away.
         # xvel = 0.0
         # yvel = 0.0
+        if self.items is None:
+            self.items = [i for i in self.scene().items() if isinstance(i, Node)]
 
-        items = [i for i in self.scene().items() if isinstance(i, Node)]
-        lines = [QLineF(self.mapFromItem(item, 0, 0), QPointF(0, 0)) for item in items]
-        dx = np.array([line.dx() for line in lines])
-        dy = np.array([line.dy() for line in lines])
-        l = 2.0 * (dx * dx + dy * dy)
+        xx, yy = self.pos().x(), self.pos().y()
+        dx = np.array([- item.pos().x() for item in self.items]) + xx
+        dy = np.array([- item.pos().y() for item in self.items]) + yy
+        l = 2.0 * (np.square(dx) + np.square(dy))
         dx = dx[l > 0]
         dy = dy[l > 0]
         l = l[l > 0]
