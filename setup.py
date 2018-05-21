@@ -12,11 +12,11 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'Click>=6.0',
+    'Click>=6.7',
     'networkx==2.1',
-    'numpy==1.14.1',
-    'PyQt5==5.9.2',
-    'scipy==1.0.0'
+    'numpy==1.14.2',
+    'PyQt5==5.10.1',
+    'scipy==1.0.1'
 ]
 
 setup_requirements = [

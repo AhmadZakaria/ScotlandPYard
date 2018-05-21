@@ -8,7 +8,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from .mapcomponents import Node, Edge
-from .profile_utils import print_prof_data
+from .profile_utils import print_prof_data, profile
 from .spyengine.maputils import get_map_graph
 
 
@@ -79,9 +79,9 @@ class SPYMap(QGraphicsView):
 
     def timerEvent(self, event):
         self.update_nodes()
-        # print_prof_data()
+        print_prof_data()
 
-    # @profile
+    @profile
     def update_nodes(self):
         pos_mat = np.array([[-item.pos().x(), -item.pos().y()] for item in self.graph.nodes()])
 
