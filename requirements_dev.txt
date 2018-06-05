@@ -43,7 +43,7 @@ sip==4.19.8
 six==1.11.0
 snowballstemmer==1.2.1
 Sphinx==1.7.2
-sphinxcontrib-websupport==1.0.1
+sphinxcontrib-websupport==1.1.0
 tox==3.0.0
 urllib3==1.22
 virtualenv==15.2.0
