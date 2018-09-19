@@ -26,7 +26,7 @@ pathtools==0.1.2
 pluggy==0.6.0
 py==1.5.3
 pycodestyle==2.4.0
-pycparser==2.18
+pycparser==2.19
 pyflakes==1.6.0
 Pygments==2.2.0
 pyparsing==2.2.0
