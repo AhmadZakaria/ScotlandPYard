@@ -35,7 +35,7 @@ pytest==3.8.2
 pytest-runner==4.2
 python-dateutil==2.7.2
 pytz==2018.4
-PyYAML==3.12
+PyYAML==3.13
 requests==2.18.4
 scipy==1.1.0
 setuptools==40.4.3
