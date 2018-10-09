@@ -11,11 +11,11 @@ click==7.0
 coverage==4.5.1
 cryptography==2.3.1
 cycler==0.10.0
-decorator==4.2.1
+decorator==4.3.0
 docutils==0.14
 flake8==3.5.0
-idna==2.6
-imagesize==1.0.0
+idna==2.7
+imagesize==1.1.0
 Jinja2==2.10
 MarkupSafe==1.0
 matplotlib==2.2.2
