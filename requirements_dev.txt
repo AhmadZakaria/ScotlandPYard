@@ -33,7 +33,7 @@ pyparsing==2.2.2
 PyQt5==5.11.3
 pytest==3.8.2
 pytest-runner==4.2
-python-dateutil==2.7.3
+python-dateutil==2.7.5
 pytz==2018.5
 PyYAML==3.13
 requests==2.21.0
