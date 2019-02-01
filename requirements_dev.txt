@@ -21,7 +21,7 @@ MarkupSafe==1.1.0
 matplotlib==3.0.2
 mccabe==0.6.1
 networkx==2.2
-numpy==1.15.2
+numpy==1.16.1
 pathtools==0.1.2
 pluggy==0.7.1
 py==1.7.0
