@@ -11,7 +11,7 @@ click==7.0
 coverage==4.5.4
 cryptography==2.8
 cycler==0.10.0
-decorator==4.4.0
+decorator==4.4.1
 docutils==0.15.2
 flake8==3.7.8
 idna==2.8
