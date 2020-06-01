@@ -27,7 +27,7 @@ pluggy==0.13.1
 py==1.8.1
 pycodestyle==2.6.0
 pycparser==2.20
-pyflakes==2.1.1
+pyflakes==2.2.0
 Pygments==2.5.2
 pyparsing==2.4.6
 PyQt5==5.13.0
