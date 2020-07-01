@@ -13,7 +13,7 @@ cryptography==2.9.2
 cycler==0.10.0
 decorator==4.4.2
 docutils==0.16
-flake8==3.7.9
+flake8==3.8.3
 idna==2.8
 imagesize==1.2.0
 Jinja2==2.11.1
