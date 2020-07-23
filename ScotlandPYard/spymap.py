@@ -63,7 +63,7 @@ class SPYMap(QGraphicsView):
     # self.fitInView(self.scene().itemsBoundingRect(), Qt.KeepAspectRatioByExpanding)
 
     def wheelEvent(self, event):
-        self.scaleView(math.pow(2.0, -event.angleDelta().y() / 240.0))
+        self.scaleView(math.pow(2.0, event.angleDelta().y() / 240.0))
 
     def scaleView(self, scaleFactor):
         factor = self.transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width()
