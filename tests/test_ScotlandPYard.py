@@ -7,7 +7,7 @@ import pytest
 
 from click.testing import CliRunner
 
-from ScotlandPYard import ScotlandPYard
+from ScotlandPYard import ScotlandPYardGame
 from ScotlandPYard import cli
 
 

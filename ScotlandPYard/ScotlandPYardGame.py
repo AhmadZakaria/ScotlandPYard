@@ -1,12 +1,13 @@
+from __future__ import absolute_import
 import os.path
 # from PyQt5.QtOpenGL import *
 import pkg_resources
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from ScotlandPYard.resources.stylesheet import stylesheet
-from ScotlandPYard.spyengine.engine import GameEngine
-from ScotlandPYard.spymap import SPYMap
+from .resources.stylesheet import stylesheet
+from .spyengine.engine import GameEngine
+from .spymap import SPYMap
 
 
 class ScotlandPYardGame(QMainWindow):

@@ -3,7 +3,7 @@
 """Console script for ScotlandPYard."""
 
 import click
-import ScotlandPYard.ScotlandPYard as spy
+import ScotlandPYard.ScotlandPYardGame as spy
 
 @click.command()
 def main(args=None):

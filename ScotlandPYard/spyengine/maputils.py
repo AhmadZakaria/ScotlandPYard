@@ -1,6 +1,6 @@
 import networkx as nx
 
-from ScotlandPYard.config.gameconfig import maps
+from ..config.gameconfig import maps
 
 
 def get_map_graph(map_name):

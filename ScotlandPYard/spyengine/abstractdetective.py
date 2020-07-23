@@ -3,7 +3,7 @@ from PyQt5.QtSvg import QGraphicsSvgItem
 from numpy.random import choice
 from os.path import join
 
-from ScotlandPYard.config.gameconfig import icons
+from ..config.gameconfig import icons
 from .abstractplayer import AbstractPlayer
 
 
