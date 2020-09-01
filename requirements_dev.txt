@@ -38,7 +38,7 @@ pytz==2020.1
 PyYAML>=4.2b1
 requests==2.24.0
 scipy==1.5.2
-setuptools==45.1.0
+setuptools==50.0.0
 sip==5.1.1
 six==1.14.0
 snowballstemmer==2.0.0
