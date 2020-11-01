@@ -37,7 +37,7 @@ python-dateutil==2.8.1
 pytz==2020.1
 PyYAML>=4.2b1
 requests==2.24.0
-scipy==1.5.2
+scipy==1.5.3
 setuptools==50.3.0
 sip==5.4.0
 six==1.15.0
