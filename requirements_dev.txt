@@ -39,7 +39,7 @@ PyYAML>=4.2b1
 requests==2.25.1
 scipy==1.6.0
 setuptools==52.0.0
-sip==5.4.0
+sip==6.0.0
 six==1.15.0
 snowballstemmer==2.0.0
 Sphinx==3.2.1
