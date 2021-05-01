@@ -14,7 +14,7 @@ cycler==0.10.0
 decorator==5.0.7
 docutils==0.17.1
 flake8==3.9.1
-idna==2.10
+idna==3.1
 imagesize==1.2.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
