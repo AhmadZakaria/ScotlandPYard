@@ -31,7 +31,7 @@ pyflakes==2.4.0
 Pygments==2.10.0
 pyparsing==3.0.4
 PyQt5==5.15.6
-pytest==6.1.0
+pytest==6.2.5
 pytest-runner==5.2
 python-dateutil==2.8.1
 pytz==2020.1
