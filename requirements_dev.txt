@@ -17,7 +17,7 @@ flake8==4.0.1
 idna==3.3
 imagesize==1.2.0
 Jinja2==3.0.2
-MarkupSafe==1.1.1
+MarkupSafe==2.0.1
 matplotlib==3.3.2
 mccabe==0.6.1
 networkx==2.5
