@@ -20,7 +20,7 @@ Jinja2==3.0.3
 MarkupSafe==2.0.1
 matplotlib==3.5.0
 mccabe==0.6.1
-networkx==2.5
+networkx==2.6.3
 numpy==1.19.2
 pathtools==0.1.2
 pluggy==0.13.1
