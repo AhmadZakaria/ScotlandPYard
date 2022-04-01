@@ -32,7 +32,7 @@ Pygments==2.11.2
 pyparsing==3.0.7
 PyQt5==5.15.6
 pytest==7.1.1
-pytest-runner==5.2
+pytest-runner==6.0.0
 python-dateutil==2.8.1
 pytz==2020.1
 PyYAML>=4.2b1
