@@ -14,7 +14,7 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'Click>=6.7',
     'networkx==2.1',
-    'numpy==1.14.2',
+    'numpy==1.22.0',
     'PyQt5==5.10.1',
     'scipy==1.0.1'
 ]
