@@ -30,7 +30,7 @@ pycparser==2.21
 pyflakes==2.5.0
 Pygments==2.12.0
 pyparsing==3.0.9
-PyQt5==5.13.0
+PyQt5==5.15.7
 pytest==6.1.0
 pytest-runner==5.2
 python-dateutil==2.8.1
