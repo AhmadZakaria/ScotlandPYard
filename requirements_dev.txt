@@ -23,7 +23,7 @@ mccabe==0.7.0
 networkx==2.8.6
 numpy==1.23.3
 pathtools==0.1.2
-pluggy==0.13.1
+pluggy==1.0.0
 py==1.9.0
 pycodestyle==2.6.0
 pycparser==2.20
