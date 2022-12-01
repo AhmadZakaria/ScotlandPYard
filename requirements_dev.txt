@@ -34,7 +34,7 @@ PyQt5==5.15.7
 pytest==7.2.0
 pytest-runner==6.0.0
 python-dateutil==2.8.2
-pytz==2020.1
+pytz==2022.6
 PyYAML>=4.2b1
 requests==2.24.0
 scipy==1.5.2
