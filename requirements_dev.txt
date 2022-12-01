@@ -29,7 +29,7 @@ pycodestyle==2.10.0
 pycparser==2.21
 pyflakes==3.0.1
 Pygments==2.13.0
-pyparsing==2.4.7
+pyparsing==3.0.9
 PyQt5==5.13.0
 pytest==6.1.0
 pytest-runner==5.2
