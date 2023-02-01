@@ -40,7 +40,7 @@ requests==2.28.2
 scipy==1.10.0
 setuptools==67.0.0
 sip==6.7.6
-six==1.15.0
+six==1.16.0
 snowballstemmer==2.0.0
 Sphinx==3.2.1
 sphinxcontrib-websupport==1.2.4
