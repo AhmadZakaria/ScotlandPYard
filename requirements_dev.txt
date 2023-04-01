@@ -41,7 +41,7 @@ scipy==1.10.1
 setuptools==67.6.1
 sip==6.7.7
 six==1.16.0
-snowballstemmer==2.0.0
+snowballstemmer==2.2.0
 Sphinx==3.2.1
 sphinxcontrib-websupport==1.2.4
 tox==3.20.0
