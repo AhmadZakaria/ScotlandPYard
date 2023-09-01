@@ -45,6 +45,6 @@ snowballstemmer==2.2.0
 Sphinx==7.2.5
 sphinxcontrib-websupport==1.2.6
 tox==4.11.0
-urllib3==1.25.10
+urllib3==2.0.4
 virtualenv==20.0.31
 watchdog==0.10.3
