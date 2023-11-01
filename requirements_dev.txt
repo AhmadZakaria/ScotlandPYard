@@ -42,7 +42,7 @@ setuptools==68.2.2
 sip==6.7.12
 six==1.16.0
 snowballstemmer==2.2.0
-Sphinx==3.2.1
+Sphinx==7.2.6
 sphinxcontrib-websupport==1.2.4
 tox==3.20.0
 urllib3==1.25.10
