@@ -46,5 +46,5 @@ Sphinx==7.3.7
 sphinxcontrib-websupport==1.2.7
 tox==4.15.1
 urllib3==2.2.2
-virtualenv==20.0.31
+virtualenv==20.26.3
 watchdog==0.10.3
