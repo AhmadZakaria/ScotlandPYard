@@ -18,7 +18,7 @@ idna==3.10
 imagesize==1.4.1
 Jinja2==3.1.4
 MarkupSafe==3.0.2
-matplotlib==3.3.2
+matplotlib==3.9.2
 mccabe==0.6.1
 networkx==2.5
 numpy==1.19.2
