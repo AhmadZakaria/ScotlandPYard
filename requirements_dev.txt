@@ -1,6 +1,6 @@
 alabaster==1.0.0
 argh==0.31.3
-asn1crypto==1.4.0
+asn1crypto==1.5.1
 attrs==20.2.0
 Babel==2.8.0
 bumpversion==0.6.0
